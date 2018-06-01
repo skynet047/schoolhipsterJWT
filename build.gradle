@@ -199,6 +199,7 @@ dependencies {
     testCompile "com.jayway.jsonpath:json-path"
     testCompile ("org.springframework.boot:spring-boot-starter-test") {
         exclude group: 'com.vaadin.external.google', module: 'android-json'
+        exclude group: 'junit', module: 'junit'
     }
     testCompile "org.springframework.security:spring-security-test"
     testCompile "org.springframework.boot:spring-boot-test"
@@ -211,6 +212,13 @@ dependencies {
         exclude group: 'com.vaadin.external.google', module: 'android-json'
     }
     //jhipster-needle-gradle-dependency - JHipster will add additional dependencies here
+
+    testCompile("org.junit.jupiter:junit-jupiter-api:5.2.0")
+    testCompile("junit:junit:4.12")
+
+    testRuntime("org.junit.platform:junit-platform-launcher:1.2.0")
+    testRuntime("org.junit.jupiter:junit-jupiter-engine:5.2.0")
+    testRuntime("org.junit.vintage:junit-vintage-engine:5.2.0")
 }
 
 task cleanResources(type: Delete) {
