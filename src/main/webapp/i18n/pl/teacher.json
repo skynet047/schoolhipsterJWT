@@ -1,0 +1,29 @@
+
+{
+    "schoolhipsterJwtApp": {
+        "teacher" : {
+            "home": {
+                "title": "Teachers",
+                "createLabel": "Dodaj Teacher",
+                "createOrEditLabel": "Dodaj lub edytuj: Teacher"
+            },
+            "created": "Utworzono nowy Teacher z identyfikatorem {{ param }}",
+            "updated": "Uaktualniono Teacher z identyfikatorem {{ param }}",
+            "deleted": "Usunięto Teacher z identyfikatorem {{ param }}",
+            "delete": {
+                "question": "Czy na pewno chcesz usunąć Teacher {{ id }}?"
+            },
+            "detail": {
+                "title": "Teacher"
+            },
+            "firstName": "First Name",
+            "lastName": "Last Name",
+            "phoneNumber": "Phone Number",
+            "email": "Email",
+            "hourlyRate": "Hourly Rate",
+            "rate": "Rate",
+            "subjects": "Subjects",
+            "lessons": "Lessons"
+        }
+    }
+}
