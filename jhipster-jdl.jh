@@ -1,0 +1,67 @@
+DEFAULT_MIN_LENGTH = 2
+DEFAULT_MAX_LENGTH = 100
+LONG_NAME_MAX_LENGTH = 150
+SHORT_NAME_MAX_LENGTH = 50
+
+enum Gender {
+    MALE, FEMALE , OTHER
+}
+entity Person {
+	firstName String required minlength(DEFAULT_MIN_LENGTH) maxlength(DEFAULT_MAX_LENGTH),
+	lastName String minlength(DEFAULT_MIN_LENGTH) maxlength(DEFAULT_MAX_LENGTH),
+	gender Gender,
+    phoneNumber String minlength(9) maxlength(18),
+    email String required pattern(/^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,6}$/)
+}
+
+entity Teacher {
+	firstName String minlength(DEFAULT_MIN_LENGTH) maxlength(DEFAULT_MAX_LENGTH),
+	lastName String minlength(DEFAULT_MIN_LENGTH) maxlength(DEFAULT_MAX_LENGTH),
+    phoneNumber String required minlength(9) maxlength(18),
+    email String required pattern(/^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,6}$/),
+    hourlyRate Integer min(1),
+    rate Integer
+}
+
+entity Student {
+	firstName String minlength(DEFAULT_MIN_LENGTH) maxlength(DEFAULT_MAX_LENGTH),
+	lastName String minlength(DEFAULT_MIN_LENGTH) maxlength(DEFAULT_MAX_LENGTH),
+    phoneNumber String minlength(9) maxlength(18),
+    email String required pattern(/^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,6}$/)
+}
+
+entity Subject {
+	name String required
+}
+
+entity Lesson {
+	plannedStartTime ZonedDateTime required,
+    plannedEndTime ZonedDateTime required,
+	realStartDate ZonedDateTime required,
+    realEndDate ZonedDateTime required,
+    topic String
+}
+
+
+relationship ManyToOne {
+    Lesson{teacher required} to Teacher{lessons},
+    Lesson{subject required} to Subject{lesson}
+}
+
+relationship ManyToMany {
+    Teacher{subjects(name) required} to Subject{teachers},
+    Student{lessons} to Lesson{students required}
+
+
+}
+
+// Set pagination options
+paginate Studnet, Teacher with infinite-scroll
+paginate Lesson with pagination
+
+dto * with mapstruct
+
+// Set service options to all except few
+service all with serviceImpl except Subject, Person
+// Set an angular suffix
+angularSuffix * with schoolcore
