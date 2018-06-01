@@ -56,7 +56,7 @@ relationship ManyToMany {
 }
 
 // Set pagination options
-paginate Studnet, Teacher with infinite-scroll
+paginate Student, Teacher with infinite-scroll
 paginate Lesson with pagination
 
 dto * with mapstruct
