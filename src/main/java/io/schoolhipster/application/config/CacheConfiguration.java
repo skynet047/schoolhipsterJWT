@@ -38,6 +38,17 @@ public class CacheConfiguration {
             cm.createCache(io.schoolhipster.application.domain.User.class.getName(), jcacheConfiguration);
             cm.createCache(io.schoolhipster.application.domain.Authority.class.getName(), jcacheConfiguration);
             cm.createCache(io.schoolhipster.application.domain.User.class.getName() + ".authorities", jcacheConfiguration);
+            cm.createCache(io.schoolhipster.application.domain.Person.class.getName(), jcacheConfiguration);
+            cm.createCache(io.schoolhipster.application.domain.Teacher.class.getName(), jcacheConfiguration);
+            cm.createCache(io.schoolhipster.application.domain.Teacher.class.getName() + ".subjects", jcacheConfiguration);
+            cm.createCache(io.schoolhipster.application.domain.Teacher.class.getName() + ".lessons", jcacheConfiguration);
+            cm.createCache(io.schoolhipster.application.domain.Student.class.getName(), jcacheConfiguration);
+            cm.createCache(io.schoolhipster.application.domain.Student.class.getName() + ".lessons", jcacheConfiguration);
+            cm.createCache(io.schoolhipster.application.domain.Subject.class.getName(), jcacheConfiguration);
+            cm.createCache(io.schoolhipster.application.domain.Subject.class.getName() + ".lessons", jcacheConfiguration);
+            cm.createCache(io.schoolhipster.application.domain.Subject.class.getName() + ".teachers", jcacheConfiguration);
+            cm.createCache(io.schoolhipster.application.domain.Lesson.class.getName(), jcacheConfiguration);
+            cm.createCache(io.schoolhipster.application.domain.Lesson.class.getName() + ".students", jcacheConfiguration);
             // jhipster-needle-ehcache-add-entry
         };
     }

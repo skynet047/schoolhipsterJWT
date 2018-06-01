@@ -1,0 +1,44 @@
+
+<div *ngIf="student">
+    <h2><span jhiTranslate="schoolhipsterJwtApp.student.detail.title">Student</span> {{student.id}}</h2>
+    <hr>
+    <jhi-alert-error></jhi-alert-error>
+    <dl class="row-md jh-entity-details">
+        <dt><span jhiTranslate="schoolhipsterJwtApp.student.firstName">First Name</span></dt>
+        <dd>
+            <span>{{student.firstName}}</span>
+        </dd>
+        <dt><span jhiTranslate="schoolhipsterJwtApp.student.lastName">Last Name</span></dt>
+        <dd>
+            <span>{{student.lastName}}</span>
+        </dd>
+        <dt><span jhiTranslate="schoolhipsterJwtApp.student.phoneNumber">Phone Number</span></dt>
+        <dd>
+            <span>{{student.phoneNumber}}</span>
+        </dd>
+        <dt><span jhiTranslate="schoolhipsterJwtApp.student.email">Email</span></dt>
+        <dd>
+            <span>{{student.email}}</span>
+        </dd>
+        <dt><span jhiTranslate="schoolhipsterJwtApp.student.lessons">Lessons</span></dt>
+        <dd>
+            <span *ngFor="let lessons of student.lessons; let last = last">
+                <a [routerLink]="['/lesson-schoolcore', lessons?.id ]">{{lessons.id}}</a>{{last ? '' : ', '}}
+            </span>
+        </dd>
+    </dl>
+
+    <button type="submit"
+            (click)="previousState()"
+            class="btn btn-info">
+        <span class="fa fa-arrow-left"></span>&nbsp;<span jhiTranslate="entity.action.back"> Back</span>
+    </button>
+
+    <button type="button"
+            [routerLink]="['/', { outlets: { popup: 'student-schoolcore/'+ student.id + '/edit'} }]"
+            replaceUrl="true"
+            queryParamsHandling="merge"
+            class="btn btn-primary">
+        <span class="fa fa-pencil"></span>&nbsp;<span jhiTranslate="entity.action.edit"> Edit</span>
+    </button>
+</div>

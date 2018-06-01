@@ -1,0 +1,26 @@
+
+{
+    "schoolhipsterJwtApp": {
+        "person" : {
+            "home": {
+                "title": "People",
+                "createLabel": "Dodaj Person",
+                "createOrEditLabel": "Dodaj lub edytuj: Person"
+            },
+            "created": "Utworzono nowy Person z identyfikatorem {{ param }}",
+            "updated": "Uaktualniono Person z identyfikatorem {{ param }}",
+            "deleted": "Usunięto Person z identyfikatorem {{ param }}",
+            "delete": {
+                "question": "Czy na pewno chcesz usunąć Person {{ id }}?"
+            },
+            "detail": {
+                "title": "Person"
+            },
+            "firstName": "First Name",
+            "lastName": "Last Name",
+            "gender": "Gender",
+            "phoneNumber": "Phone Number",
+            "email": "Email"
+        }
+    }
+}

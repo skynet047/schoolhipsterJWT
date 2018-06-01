@@ -1,0 +1,26 @@
+
+{
+    "schoolhipsterJwtApp": {
+        "student" : {
+            "home": {
+                "title": "Students",
+                "createLabel": "Dodaj Student",
+                "createOrEditLabel": "Dodaj lub edytuj: Student"
+            },
+            "created": "Utworzono nowy Student z identyfikatorem {{ param }}",
+            "updated": "Uaktualniono Student z identyfikatorem {{ param }}",
+            "deleted": "Usunięto Student z identyfikatorem {{ param }}",
+            "delete": {
+                "question": "Czy na pewno chcesz usunąć Student {{ id }}?"
+            },
+            "detail": {
+                "title": "Student"
+            },
+            "firstName": "First Name",
+            "lastName": "Last Name",
+            "phoneNumber": "Phone Number",
+            "email": "Email",
+            "lessons": "Lessons"
+        }
+    }
+}

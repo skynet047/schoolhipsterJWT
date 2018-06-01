@@ -1,0 +1,29 @@
+
+{
+    "schoolhipsterJwtApp": {
+        "lesson" : {
+            "home": {
+                "title": "Lessons",
+                "createLabel": "Create a new Lesson",
+                "createOrEditLabel": "Create or edit a Lesson"
+            },
+            "created": "A new Lesson is created with identifier {{ param }}",
+            "updated": "A Lesson is updated with identifier {{ param }}",
+            "deleted": "A Lesson is deleted with identifier {{ param }}",
+            "delete": {
+                "question": "Are you sure you want to delete Lesson {{ id }}?"
+            },
+            "detail": {
+                "title": "Lesson"
+            },
+            "plannedStartTime": "Planned Start Time",
+            "plannedEndTime": "Planned End Time",
+            "realStartDate": "Real Start Date",
+            "realEndDate": "Real End Date",
+            "topic": "Topic",
+            "teacher": "Teacher",
+            "subject": "Subject",
+            "students": "Students"
+        }
+    }
+}
