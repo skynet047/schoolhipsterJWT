@@ -52,7 +52,7 @@
     "entityTableName": "person",
     "dto": "no",
     "pagination": "no",
-    "service": "no",
-    "jpaMetamodelFiltering": false,
+    "service": "serviceImpl",
+    "jpaMetamodelFiltering": true,
     "angularJSSuffix": "schoolcore"
 }

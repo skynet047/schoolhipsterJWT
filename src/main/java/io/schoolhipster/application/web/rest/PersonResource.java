@@ -2,10 +2,11 @@ package io.schoolhipster.application.web.rest;
 
 import com.codahale.metrics.annotation.Timed;
 import io.schoolhipster.application.domain.Person;
-
-import io.schoolhipster.application.repository.PersonRepository;
+import io.schoolhipster.application.service.PersonService;
 import io.schoolhipster.application.web.rest.errors.BadRequestAlertException;
 import io.schoolhipster.application.web.rest.util.HeaderUtil;
+import io.schoolhipster.application.service.dto.PersonCriteria;
+import io.schoolhipster.application.service.PersonQueryService;
 import io.github.jhipster.web.util.ResponseUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -30,10 +31,13 @@ public class PersonResource {
 
     private static final String ENTITY_NAME = "person";
 
-    private final PersonRepository personRepository;
+    private final PersonService personService;
 
-    public PersonResource(PersonRepository personRepository) {
-        this.personRepository = personRepository;
+    private final PersonQueryService personQueryService;
+
+    public PersonResource(PersonService personService, PersonQueryService personQueryService) {
+        this.personService = personService;
+        this.personQueryService = personQueryService;
     }
 
     /**
@@ -50,7 +54,7 @@ public class PersonResource {
         if (person.getId() != null) {
             throw new BadRequestAlertException("A new person cannot already have an ID", ENTITY_NAME, "idexists");
         }
-        Person result = personRepository.save(person);
+        Person result = personService.save(person);
         return ResponseEntity.created(new URI("/api/people/" + result.getId()))
             .headers(HeaderUtil.createEntityCreationAlert(ENTITY_NAME, result.getId().toString()))
             .body(result);
@@ -72,7 +76,7 @@ public class PersonResource {
         if (person.getId() == null) {
             return createPerson(person);
         }
-        Person result = personRepository.save(person);
+        Person result = personService.save(person);
         return ResponseEntity.ok()
             .headers(HeaderUtil.createEntityUpdateAlert(ENTITY_NAME, person.getId().toString()))
             .body(result);
@@ -81,14 +85,16 @@ public class PersonResource {
     /**
      * GET  /people : get all the people.
      *
+     * @param criteria the criterias which the requested entities should match
      * @return the ResponseEntity with status 200 (OK) and the list of people in body
      */
     @GetMapping("/people")
     @Timed
-    public List<Person> getAllPeople() {
-        log.debug("REST request to get all People");
-        return personRepository.findAll();
-        }
+    public ResponseEntity<List<Person>> getAllPeople(PersonCriteria criteria) {
+        log.debug("REST request to get People by criteria: {}", criteria);
+        List<Person> entityList = personQueryService.findByCriteria(criteria);
+        return ResponseEntity.ok().body(entityList);
+    }
 
     /**
      * GET  /people/:id : get the "id" person.
@@ -100,7 +106,7 @@ public class PersonResource {
     @Timed
     public ResponseEntity<Person> getPerson(@PathVariable Long id) {
         log.debug("REST request to get Person : {}", id);
-        Person person = personRepository.findOne(id);
+        Person person = personService.findOne(id);
         return ResponseUtil.wrapOrNotFound(Optional.ofNullable(person));
     }
 
@@ -114,7 +120,7 @@ public class PersonResource {
     @Timed
     public ResponseEntity<Void> deletePerson(@PathVariable Long id) {
         log.debug("REST request to delete Person : {}", id);
-        personRepository.delete(id);
+        personService.delete(id);
         return ResponseEntity.ok().headers(HeaderUtil.createEntityDeletionAlert(ENTITY_NAME, id.toString())).build();
     }
 }

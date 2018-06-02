@@ -4,7 +4,10 @@ import io.schoolhipster.application.SchoolhipsterJwtApp;
 
 import io.schoolhipster.application.domain.Person;
 import io.schoolhipster.application.repository.PersonRepository;
+import io.schoolhipster.application.service.PersonService;
 import io.schoolhipster.application.web.rest.errors.ExceptionTranslator;
+import io.schoolhipster.application.service.dto.PersonCriteria;
+import io.schoolhipster.application.service.PersonQueryService;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -58,6 +61,12 @@ public class PersonResourceIntTest {
     private PersonRepository personRepository;
 
     @Autowired
+    private PersonService personService;
+
+    @Autowired
+    private PersonQueryService personQueryService;
+
+    @Autowired
     private MappingJackson2HttpMessageConverter jacksonMessageConverter;
 
     @Autowired
@@ -76,7 +85,7 @@ public class PersonResourceIntTest {
     @Before
     public void setup() {
         MockitoAnnotations.initMocks(this);
-        final PersonResource personResource = new PersonResource(personRepository);
+        final PersonResource personResource = new PersonResource(personService, personQueryService);
         this.restPersonMockMvc = MockMvcBuilders.standaloneSetup(personResource)
             .setCustomArgumentResolvers(pageableArgumentResolver)
             .setControllerAdvice(exceptionTranslator)
@@ -220,6 +229,227 @@ public class PersonResourceIntTest {
 
     @Test
     @Transactional
+    public void getAllPeopleByFirstNameIsEqualToSomething() throws Exception {
+        // Initialize the database
+        personRepository.saveAndFlush(person);
+
+        // Get all the personList where firstName equals to DEFAULT_FIRST_NAME
+        defaultPersonShouldBeFound("firstName.equals=" + DEFAULT_FIRST_NAME);
+
+        // Get all the personList where firstName equals to UPDATED_FIRST_NAME
+        defaultPersonShouldNotBeFound("firstName.equals=" + UPDATED_FIRST_NAME);
+    }
+
+    @Test
+    @Transactional
+    public void getAllPeopleByFirstNameIsInShouldWork() throws Exception {
+        // Initialize the database
+        personRepository.saveAndFlush(person);
+
+        // Get all the personList where firstName in DEFAULT_FIRST_NAME or UPDATED_FIRST_NAME
+        defaultPersonShouldBeFound("firstName.in=" + DEFAULT_FIRST_NAME + "," + UPDATED_FIRST_NAME);
+
+        // Get all the personList where firstName equals to UPDATED_FIRST_NAME
+        defaultPersonShouldNotBeFound("firstName.in=" + UPDATED_FIRST_NAME);
+    }
+
+    @Test
+    @Transactional
+    public void getAllPeopleByFirstNameIsNullOrNotNull() throws Exception {
+        // Initialize the database
+        personRepository.saveAndFlush(person);
+
+        // Get all the personList where firstName is not null
+        defaultPersonShouldBeFound("firstName.specified=true");
+
+        // Get all the personList where firstName is null
+        defaultPersonShouldNotBeFound("firstName.specified=false");
+    }
+
+    @Test
+    @Transactional
+    public void getAllPeopleByLastNameIsEqualToSomething() throws Exception {
+        // Initialize the database
+        personRepository.saveAndFlush(person);
+
+        // Get all the personList where lastName equals to DEFAULT_LAST_NAME
+        defaultPersonShouldBeFound("lastName.equals=" + DEFAULT_LAST_NAME);
+
+        // Get all the personList where lastName equals to UPDATED_LAST_NAME
+        defaultPersonShouldNotBeFound("lastName.equals=" + UPDATED_LAST_NAME);
+    }
+
+    @Test
+    @Transactional
+    public void getAllPeopleByLastNameIsInShouldWork() throws Exception {
+        // Initialize the database
+        personRepository.saveAndFlush(person);
+
+        // Get all the personList where lastName in DEFAULT_LAST_NAME or UPDATED_LAST_NAME
+        defaultPersonShouldBeFound("lastName.in=" + DEFAULT_LAST_NAME + "," + UPDATED_LAST_NAME);
+
+        // Get all the personList where lastName equals to UPDATED_LAST_NAME
+        defaultPersonShouldNotBeFound("lastName.in=" + UPDATED_LAST_NAME);
+    }
+
+    @Test
+    @Transactional
+    public void getAllPeopleByLastNameIsNullOrNotNull() throws Exception {
+        // Initialize the database
+        personRepository.saveAndFlush(person);
+
+        // Get all the personList where lastName is not null
+        defaultPersonShouldBeFound("lastName.specified=true");
+
+        // Get all the personList where lastName is null
+        defaultPersonShouldNotBeFound("lastName.specified=false");
+    }
+
+    @Test
+    @Transactional
+    public void getAllPeopleByGenderIsEqualToSomething() throws Exception {
+        // Initialize the database
+        personRepository.saveAndFlush(person);
+
+        // Get all the personList where gender equals to DEFAULT_GENDER
+        defaultPersonShouldBeFound("gender.equals=" + DEFAULT_GENDER);
+
+        // Get all the personList where gender equals to UPDATED_GENDER
+        defaultPersonShouldNotBeFound("gender.equals=" + UPDATED_GENDER);
+    }
+
+    @Test
+    @Transactional
+    public void getAllPeopleByGenderIsInShouldWork() throws Exception {
+        // Initialize the database
+        personRepository.saveAndFlush(person);
+
+        // Get all the personList where gender in DEFAULT_GENDER or UPDATED_GENDER
+        defaultPersonShouldBeFound("gender.in=" + DEFAULT_GENDER + "," + UPDATED_GENDER);
+
+        // Get all the personList where gender equals to UPDATED_GENDER
+        defaultPersonShouldNotBeFound("gender.in=" + UPDATED_GENDER);
+    }
+
+    @Test
+    @Transactional
+    public void getAllPeopleByGenderIsNullOrNotNull() throws Exception {
+        // Initialize the database
+        personRepository.saveAndFlush(person);
+
+        // Get all the personList where gender is not null
+        defaultPersonShouldBeFound("gender.specified=true");
+
+        // Get all the personList where gender is null
+        defaultPersonShouldNotBeFound("gender.specified=false");
+    }
+
+    @Test
+    @Transactional
+    public void getAllPeopleByPhoneNumberIsEqualToSomething() throws Exception {
+        // Initialize the database
+        personRepository.saveAndFlush(person);
+
+        // Get all the personList where phoneNumber equals to DEFAULT_PHONE_NUMBER
+        defaultPersonShouldBeFound("phoneNumber.equals=" + DEFAULT_PHONE_NUMBER);
+
+        // Get all the personList where phoneNumber equals to UPDATED_PHONE_NUMBER
+        defaultPersonShouldNotBeFound("phoneNumber.equals=" + UPDATED_PHONE_NUMBER);
+    }
+
+    @Test
+    @Transactional
+    public void getAllPeopleByPhoneNumberIsInShouldWork() throws Exception {
+        // Initialize the database
+        personRepository.saveAndFlush(person);
+
+        // Get all the personList where phoneNumber in DEFAULT_PHONE_NUMBER or UPDATED_PHONE_NUMBER
+        defaultPersonShouldBeFound("phoneNumber.in=" + DEFAULT_PHONE_NUMBER + "," + UPDATED_PHONE_NUMBER);
+
+        // Get all the personList where phoneNumber equals to UPDATED_PHONE_NUMBER
+        defaultPersonShouldNotBeFound("phoneNumber.in=" + UPDATED_PHONE_NUMBER);
+    }
+
+    @Test
+    @Transactional
+    public void getAllPeopleByPhoneNumberIsNullOrNotNull() throws Exception {
+        // Initialize the database
+        personRepository.saveAndFlush(person);
+
+        // Get all the personList where phoneNumber is not null
+        defaultPersonShouldBeFound("phoneNumber.specified=true");
+
+        // Get all the personList where phoneNumber is null
+        defaultPersonShouldNotBeFound("phoneNumber.specified=false");
+    }
+
+    @Test
+    @Transactional
+    public void getAllPeopleByEmailIsEqualToSomething() throws Exception {
+        // Initialize the database
+        personRepository.saveAndFlush(person);
+
+        // Get all the personList where email equals to DEFAULT_EMAIL
+        defaultPersonShouldBeFound("email.equals=" + DEFAULT_EMAIL);
+
+        // Get all the personList where email equals to UPDATED_EMAIL
+        defaultPersonShouldNotBeFound("email.equals=" + UPDATED_EMAIL);
+    }
+
+    @Test
+    @Transactional
+    public void getAllPeopleByEmailIsInShouldWork() throws Exception {
+        // Initialize the database
+        personRepository.saveAndFlush(person);
+
+        // Get all the personList where email in DEFAULT_EMAIL or UPDATED_EMAIL
+        defaultPersonShouldBeFound("email.in=" + DEFAULT_EMAIL + "," + UPDATED_EMAIL);
+
+        // Get all the personList where email equals to UPDATED_EMAIL
+        defaultPersonShouldNotBeFound("email.in=" + UPDATED_EMAIL);
+    }
+
+    @Test
+    @Transactional
+    public void getAllPeopleByEmailIsNullOrNotNull() throws Exception {
+        // Initialize the database
+        personRepository.saveAndFlush(person);
+
+        // Get all the personList where email is not null
+        defaultPersonShouldBeFound("email.specified=true");
+
+        // Get all the personList where email is null
+        defaultPersonShouldNotBeFound("email.specified=false");
+    }
+    /**
+     * Executes the search, and checks that the default entity is returned
+     */
+    private void defaultPersonShouldBeFound(String filter) throws Exception {
+        restPersonMockMvc.perform(get("/api/people?sort=id,desc&" + filter))
+            .andExpect(status().isOk())
+            .andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8_VALUE))
+            .andExpect(jsonPath("$.[*].id").value(hasItem(person.getId().intValue())))
+            .andExpect(jsonPath("$.[*].firstName").value(hasItem(DEFAULT_FIRST_NAME.toString())))
+            .andExpect(jsonPath("$.[*].lastName").value(hasItem(DEFAULT_LAST_NAME.toString())))
+            .andExpect(jsonPath("$.[*].gender").value(hasItem(DEFAULT_GENDER.toString())))
+            .andExpect(jsonPath("$.[*].phoneNumber").value(hasItem(DEFAULT_PHONE_NUMBER.toString())))
+            .andExpect(jsonPath("$.[*].email").value(hasItem(DEFAULT_EMAIL.toString())));
+    }
+
+    /**
+     * Executes the search, and checks that the default entity is not returned
+     */
+    private void defaultPersonShouldNotBeFound(String filter) throws Exception {
+        restPersonMockMvc.perform(get("/api/people?sort=id,desc&" + filter))
+            .andExpect(status().isOk())
+            .andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8_VALUE))
+            .andExpect(jsonPath("$").isArray())
+            .andExpect(jsonPath("$").isEmpty());
+    }
+
+
+    @Test
+    @Transactional
     public void getNonExistingPerson() throws Exception {
         // Get the person
         restPersonMockMvc.perform(get("/api/people/{id}", Long.MAX_VALUE))
@@ -230,7 +460,8 @@ public class PersonResourceIntTest {
     @Transactional
     public void updatePerson() throws Exception {
         // Initialize the database
-        personRepository.saveAndFlush(person);
+        personService.save(person);
+
         int databaseSizeBeforeUpdate = personRepository.findAll().size();
 
         // Update the person
@@ -282,7 +513,8 @@ public class PersonResourceIntTest {
     @Transactional
     public void deletePerson() throws Exception {
         // Initialize the database
-        personRepository.saveAndFlush(person);
+        personService.save(person);
+
         int databaseSizeBeforeDelete = personRepository.findAll().size();
 
         // Get the person
