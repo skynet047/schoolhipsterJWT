@@ -4,11 +4,14 @@ import io.schoolhipster.application.SchoolhipsterJwtApp;
 
 import io.schoolhipster.application.domain.Teacher;
 import io.schoolhipster.application.domain.Subject;
+import io.schoolhipster.application.domain.Lesson;
 import io.schoolhipster.application.repository.TeacherRepository;
 import io.schoolhipster.application.service.TeacherService;
 import io.schoolhipster.application.service.dto.TeacherDTO;
 import io.schoolhipster.application.service.mapper.TeacherMapper;
 import io.schoolhipster.application.web.rest.errors.ExceptionTranslator;
+import io.schoolhipster.application.service.dto.TeacherCriteria;
+import io.schoolhipster.application.service.TeacherQueryService;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -70,6 +73,9 @@ public class TeacherResourceIntTest {
     private TeacherService teacherService;
 
     @Autowired
+    private TeacherQueryService teacherQueryService;
+
+    @Autowired
     private MappingJackson2HttpMessageConverter jacksonMessageConverter;
 
     @Autowired
@@ -88,7 +94,7 @@ public class TeacherResourceIntTest {
     @Before
     public void setup() {
         MockitoAnnotations.initMocks(this);
-        final TeacherResource teacherResource = new TeacherResource(teacherService);
+        final TeacherResource teacherResource = new TeacherResource(teacherService, teacherQueryService);
         this.restTeacherMockMvc = MockMvcBuilders.standaloneSetup(teacherResource)
             .setCustomArgumentResolvers(pageableArgumentResolver)
             .setControllerAdvice(exceptionTranslator)
@@ -242,6 +248,359 @@ public class TeacherResourceIntTest {
             .andExpect(jsonPath("$.hourlyRate").value(DEFAULT_HOURLY_RATE))
             .andExpect(jsonPath("$.rate").value(DEFAULT_RATE));
     }
+
+    @Test
+    @Transactional
+    public void getAllTeachersByFirstNameIsEqualToSomething() throws Exception {
+        // Initialize the database
+        teacherRepository.saveAndFlush(teacher);
+
+        // Get all the teacherList where firstName equals to DEFAULT_FIRST_NAME
+        defaultTeacherShouldBeFound("firstName.equals=" + DEFAULT_FIRST_NAME);
+
+        // Get all the teacherList where firstName equals to UPDATED_FIRST_NAME
+        defaultTeacherShouldNotBeFound("firstName.equals=" + UPDATED_FIRST_NAME);
+    }
+
+    @Test
+    @Transactional
+    public void getAllTeachersByFirstNameIsInShouldWork() throws Exception {
+        // Initialize the database
+        teacherRepository.saveAndFlush(teacher);
+
+        // Get all the teacherList where firstName in DEFAULT_FIRST_NAME or UPDATED_FIRST_NAME
+        defaultTeacherShouldBeFound("firstName.in=" + DEFAULT_FIRST_NAME + "," + UPDATED_FIRST_NAME);
+
+        // Get all the teacherList where firstName equals to UPDATED_FIRST_NAME
+        defaultTeacherShouldNotBeFound("firstName.in=" + UPDATED_FIRST_NAME);
+    }
+
+    @Test
+    @Transactional
+    public void getAllTeachersByFirstNameIsNullOrNotNull() throws Exception {
+        // Initialize the database
+        teacherRepository.saveAndFlush(teacher);
+
+        // Get all the teacherList where firstName is not null
+        defaultTeacherShouldBeFound("firstName.specified=true");
+
+        // Get all the teacherList where firstName is null
+        defaultTeacherShouldNotBeFound("firstName.specified=false");
+    }
+
+    @Test
+    @Transactional
+    public void getAllTeachersByLastNameIsEqualToSomething() throws Exception {
+        // Initialize the database
+        teacherRepository.saveAndFlush(teacher);
+
+        // Get all the teacherList where lastName equals to DEFAULT_LAST_NAME
+        defaultTeacherShouldBeFound("lastName.equals=" + DEFAULT_LAST_NAME);
+
+        // Get all the teacherList where lastName equals to UPDATED_LAST_NAME
+        defaultTeacherShouldNotBeFound("lastName.equals=" + UPDATED_LAST_NAME);
+    }
+
+    @Test
+    @Transactional
+    public void getAllTeachersByLastNameIsInShouldWork() throws Exception {
+        // Initialize the database
+        teacherRepository.saveAndFlush(teacher);
+
+        // Get all the teacherList where lastName in DEFAULT_LAST_NAME or UPDATED_LAST_NAME
+        defaultTeacherShouldBeFound("lastName.in=" + DEFAULT_LAST_NAME + "," + UPDATED_LAST_NAME);
+
+        // Get all the teacherList where lastName equals to UPDATED_LAST_NAME
+        defaultTeacherShouldNotBeFound("lastName.in=" + UPDATED_LAST_NAME);
+    }
+
+    @Test
+    @Transactional
+    public void getAllTeachersByLastNameIsNullOrNotNull() throws Exception {
+        // Initialize the database
+        teacherRepository.saveAndFlush(teacher);
+
+        // Get all the teacherList where lastName is not null
+        defaultTeacherShouldBeFound("lastName.specified=true");
+
+        // Get all the teacherList where lastName is null
+        defaultTeacherShouldNotBeFound("lastName.specified=false");
+    }
+
+    @Test
+    @Transactional
+    public void getAllTeachersByPhoneNumberIsEqualToSomething() throws Exception {
+        // Initialize the database
+        teacherRepository.saveAndFlush(teacher);
+
+        // Get all the teacherList where phoneNumber equals to DEFAULT_PHONE_NUMBER
+        defaultTeacherShouldBeFound("phoneNumber.equals=" + DEFAULT_PHONE_NUMBER);
+
+        // Get all the teacherList where phoneNumber equals to UPDATED_PHONE_NUMBER
+        defaultTeacherShouldNotBeFound("phoneNumber.equals=" + UPDATED_PHONE_NUMBER);
+    }
+
+    @Test
+    @Transactional
+    public void getAllTeachersByPhoneNumberIsInShouldWork() throws Exception {
+        // Initialize the database
+        teacherRepository.saveAndFlush(teacher);
+
+        // Get all the teacherList where phoneNumber in DEFAULT_PHONE_NUMBER or UPDATED_PHONE_NUMBER
+        defaultTeacherShouldBeFound("phoneNumber.in=" + DEFAULT_PHONE_NUMBER + "," + UPDATED_PHONE_NUMBER);
+
+        // Get all the teacherList where phoneNumber equals to UPDATED_PHONE_NUMBER
+        defaultTeacherShouldNotBeFound("phoneNumber.in=" + UPDATED_PHONE_NUMBER);
+    }
+
+    @Test
+    @Transactional
+    public void getAllTeachersByPhoneNumberIsNullOrNotNull() throws Exception {
+        // Initialize the database
+        teacherRepository.saveAndFlush(teacher);
+
+        // Get all the teacherList where phoneNumber is not null
+        defaultTeacherShouldBeFound("phoneNumber.specified=true");
+
+        // Get all the teacherList where phoneNumber is null
+        defaultTeacherShouldNotBeFound("phoneNumber.specified=false");
+    }
+
+    @Test
+    @Transactional
+    public void getAllTeachersByEmailIsEqualToSomething() throws Exception {
+        // Initialize the database
+        teacherRepository.saveAndFlush(teacher);
+
+        // Get all the teacherList where email equals to DEFAULT_EMAIL
+        defaultTeacherShouldBeFound("email.equals=" + DEFAULT_EMAIL);
+
+        // Get all the teacherList where email equals to UPDATED_EMAIL
+        defaultTeacherShouldNotBeFound("email.equals=" + UPDATED_EMAIL);
+    }
+
+    @Test
+    @Transactional
+    public void getAllTeachersByEmailIsInShouldWork() throws Exception {
+        // Initialize the database
+        teacherRepository.saveAndFlush(teacher);
+
+        // Get all the teacherList where email in DEFAULT_EMAIL or UPDATED_EMAIL
+        defaultTeacherShouldBeFound("email.in=" + DEFAULT_EMAIL + "," + UPDATED_EMAIL);
+
+        // Get all the teacherList where email equals to UPDATED_EMAIL
+        defaultTeacherShouldNotBeFound("email.in=" + UPDATED_EMAIL);
+    }
+
+    @Test
+    @Transactional
+    public void getAllTeachersByEmailIsNullOrNotNull() throws Exception {
+        // Initialize the database
+        teacherRepository.saveAndFlush(teacher);
+
+        // Get all the teacherList where email is not null
+        defaultTeacherShouldBeFound("email.specified=true");
+
+        // Get all the teacherList where email is null
+        defaultTeacherShouldNotBeFound("email.specified=false");
+    }
+
+    @Test
+    @Transactional
+    public void getAllTeachersByHourlyRateIsEqualToSomething() throws Exception {
+        // Initialize the database
+        teacherRepository.saveAndFlush(teacher);
+
+        // Get all the teacherList where hourlyRate equals to DEFAULT_HOURLY_RATE
+        defaultTeacherShouldBeFound("hourlyRate.equals=" + DEFAULT_HOURLY_RATE);
+
+        // Get all the teacherList where hourlyRate equals to UPDATED_HOURLY_RATE
+        defaultTeacherShouldNotBeFound("hourlyRate.equals=" + UPDATED_HOURLY_RATE);
+    }
+
+    @Test
+    @Transactional
+    public void getAllTeachersByHourlyRateIsInShouldWork() throws Exception {
+        // Initialize the database
+        teacherRepository.saveAndFlush(teacher);
+
+        // Get all the teacherList where hourlyRate in DEFAULT_HOURLY_RATE or UPDATED_HOURLY_RATE
+        defaultTeacherShouldBeFound("hourlyRate.in=" + DEFAULT_HOURLY_RATE + "," + UPDATED_HOURLY_RATE);
+
+        // Get all the teacherList where hourlyRate equals to UPDATED_HOURLY_RATE
+        defaultTeacherShouldNotBeFound("hourlyRate.in=" + UPDATED_HOURLY_RATE);
+    }
+
+    @Test
+    @Transactional
+    public void getAllTeachersByHourlyRateIsNullOrNotNull() throws Exception {
+        // Initialize the database
+        teacherRepository.saveAndFlush(teacher);
+
+        // Get all the teacherList where hourlyRate is not null
+        defaultTeacherShouldBeFound("hourlyRate.specified=true");
+
+        // Get all the teacherList where hourlyRate is null
+        defaultTeacherShouldNotBeFound("hourlyRate.specified=false");
+    }
+
+    @Test
+    @Transactional
+    public void getAllTeachersByHourlyRateIsGreaterThanOrEqualToSomething() throws Exception {
+        // Initialize the database
+        teacherRepository.saveAndFlush(teacher);
+
+        // Get all the teacherList where hourlyRate greater than or equals to DEFAULT_HOURLY_RATE
+        defaultTeacherShouldBeFound("hourlyRate.greaterOrEqualThan=" + DEFAULT_HOURLY_RATE);
+
+        // Get all the teacherList where hourlyRate greater than or equals to UPDATED_HOURLY_RATE
+        defaultTeacherShouldNotBeFound("hourlyRate.greaterOrEqualThan=" + UPDATED_HOURLY_RATE);
+    }
+
+    @Test
+    @Transactional
+    public void getAllTeachersByHourlyRateIsLessThanSomething() throws Exception {
+        // Initialize the database
+        teacherRepository.saveAndFlush(teacher);
+
+        // Get all the teacherList where hourlyRate less than or equals to DEFAULT_HOURLY_RATE
+        defaultTeacherShouldNotBeFound("hourlyRate.lessThan=" + DEFAULT_HOURLY_RATE);
+
+        // Get all the teacherList where hourlyRate less than or equals to UPDATED_HOURLY_RATE
+        defaultTeacherShouldBeFound("hourlyRate.lessThan=" + UPDATED_HOURLY_RATE);
+    }
+
+
+    @Test
+    @Transactional
+    public void getAllTeachersByRateIsEqualToSomething() throws Exception {
+        // Initialize the database
+        teacherRepository.saveAndFlush(teacher);
+
+        // Get all the teacherList where rate equals to DEFAULT_RATE
+        defaultTeacherShouldBeFound("rate.equals=" + DEFAULT_RATE);
+
+        // Get all the teacherList where rate equals to UPDATED_RATE
+        defaultTeacherShouldNotBeFound("rate.equals=" + UPDATED_RATE);
+    }
+
+    @Test
+    @Transactional
+    public void getAllTeachersByRateIsInShouldWork() throws Exception {
+        // Initialize the database
+        teacherRepository.saveAndFlush(teacher);
+
+        // Get all the teacherList where rate in DEFAULT_RATE or UPDATED_RATE
+        defaultTeacherShouldBeFound("rate.in=" + DEFAULT_RATE + "," + UPDATED_RATE);
+
+        // Get all the teacherList where rate equals to UPDATED_RATE
+        defaultTeacherShouldNotBeFound("rate.in=" + UPDATED_RATE);
+    }
+
+    @Test
+    @Transactional
+    public void getAllTeachersByRateIsNullOrNotNull() throws Exception {
+        // Initialize the database
+        teacherRepository.saveAndFlush(teacher);
+
+        // Get all the teacherList where rate is not null
+        defaultTeacherShouldBeFound("rate.specified=true");
+
+        // Get all the teacherList where rate is null
+        defaultTeacherShouldNotBeFound("rate.specified=false");
+    }
+
+    @Test
+    @Transactional
+    public void getAllTeachersByRateIsGreaterThanOrEqualToSomething() throws Exception {
+        // Initialize the database
+        teacherRepository.saveAndFlush(teacher);
+
+        // Get all the teacherList where rate greater than or equals to DEFAULT_RATE
+        defaultTeacherShouldBeFound("rate.greaterOrEqualThan=" + DEFAULT_RATE);
+
+        // Get all the teacherList where rate greater than or equals to UPDATED_RATE
+        defaultTeacherShouldNotBeFound("rate.greaterOrEqualThan=" + UPDATED_RATE);
+    }
+
+    @Test
+    @Transactional
+    public void getAllTeachersByRateIsLessThanSomething() throws Exception {
+        // Initialize the database
+        teacherRepository.saveAndFlush(teacher);
+
+        // Get all the teacherList where rate less than or equals to DEFAULT_RATE
+        defaultTeacherShouldNotBeFound("rate.lessThan=" + DEFAULT_RATE);
+
+        // Get all the teacherList where rate less than or equals to UPDATED_RATE
+        defaultTeacherShouldBeFound("rate.lessThan=" + UPDATED_RATE);
+    }
+
+
+    @Test
+    @Transactional
+    public void getAllTeachersBySubjectsIsEqualToSomething() throws Exception {
+        // Initialize the database
+        Subject subjects = SubjectResourceIntTest.createEntity(em);
+        em.persist(subjects);
+        em.flush();
+        teacher.addSubjects(subjects);
+        teacherRepository.saveAndFlush(teacher);
+        Long subjectsId = subjects.getId();
+
+        // Get all the teacherList where subjects equals to subjectsId
+        defaultTeacherShouldBeFound("subjectsId.equals=" + subjectsId);
+
+        // Get all the teacherList where subjects equals to subjectsId + 1
+        defaultTeacherShouldNotBeFound("subjectsId.equals=" + (subjectsId + 1));
+    }
+
+
+    @Test
+    @Transactional
+    public void getAllTeachersByLessonsIsEqualToSomething() throws Exception {
+        // Initialize the database
+        Lesson lessons = LessonResourceIntTest.createEntity(em);
+        em.persist(lessons);
+        em.flush();
+        teacher.addLessons(lessons);
+        teacherRepository.saveAndFlush(teacher);
+        Long lessonsId = lessons.getId();
+
+        // Get all the teacherList where lessons equals to lessonsId
+        defaultTeacherShouldBeFound("lessonsId.equals=" + lessonsId);
+
+        // Get all the teacherList where lessons equals to lessonsId + 1
+        defaultTeacherShouldNotBeFound("lessonsId.equals=" + (lessonsId + 1));
+    }
+
+    /**
+     * Executes the search, and checks that the default entity is returned
+     */
+    private void defaultTeacherShouldBeFound(String filter) throws Exception {
+        restTeacherMockMvc.perform(get("/api/teachers?sort=id,desc&" + filter))
+            .andExpect(status().isOk())
+            .andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8_VALUE))
+            .andExpect(jsonPath("$.[*].id").value(hasItem(teacher.getId().intValue())))
+            .andExpect(jsonPath("$.[*].firstName").value(hasItem(DEFAULT_FIRST_NAME.toString())))
+            .andExpect(jsonPath("$.[*].lastName").value(hasItem(DEFAULT_LAST_NAME.toString())))
+            .andExpect(jsonPath("$.[*].phoneNumber").value(hasItem(DEFAULT_PHONE_NUMBER.toString())))
+            .andExpect(jsonPath("$.[*].email").value(hasItem(DEFAULT_EMAIL.toString())))
+            .andExpect(jsonPath("$.[*].hourlyRate").value(hasItem(DEFAULT_HOURLY_RATE)))
+            .andExpect(jsonPath("$.[*].rate").value(hasItem(DEFAULT_RATE)));
+    }
+
+    /**
+     * Executes the search, and checks that the default entity is not returned
+     */
+    private void defaultTeacherShouldNotBeFound(String filter) throws Exception {
+        restTeacherMockMvc.perform(get("/api/teachers?sort=id,desc&" + filter))
+            .andExpect(status().isOk())
+            .andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8_VALUE))
+            .andExpect(jsonPath("$").isArray())
+            .andExpect(jsonPath("$").isEmpty());
+    }
+
 
     @Test
     @Transactional

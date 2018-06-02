@@ -6,6 +6,8 @@ import io.schoolhipster.application.web.rest.errors.BadRequestAlertException;
 import io.schoolhipster.application.web.rest.util.HeaderUtil;
 import io.schoolhipster.application.web.rest.util.PaginationUtil;
 import io.schoolhipster.application.service.dto.TeacherDTO;
+import io.schoolhipster.application.service.dto.TeacherCriteria;
+import io.schoolhipster.application.service.TeacherQueryService;
 import io.github.jhipster.web.util.ResponseUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -36,8 +38,11 @@ public class TeacherResource {
 
     private final TeacherService teacherService;
 
-    public TeacherResource(TeacherService teacherService) {
+    private final TeacherQueryService teacherQueryService;
+
+    public TeacherResource(TeacherService teacherService, TeacherQueryService teacherQueryService) {
         this.teacherService = teacherService;
+        this.teacherQueryService = teacherQueryService;
     }
 
     /**
@@ -86,13 +91,14 @@ public class TeacherResource {
      * GET  /teachers : get all the teachers.
      *
      * @param pageable the pagination information
+     * @param criteria the criterias which the requested entities should match
      * @return the ResponseEntity with status 200 (OK) and the list of teachers in body
      */
     @GetMapping("/teachers")
     @Timed
-    public ResponseEntity<List<TeacherDTO>> getAllTeachers(Pageable pageable) {
-        log.debug("REST request to get a page of Teachers");
-        Page<TeacherDTO> page = teacherService.findAll(pageable);
+    public ResponseEntity<List<TeacherDTO>> getAllTeachers(TeacherCriteria criteria, Pageable pageable) {
+        log.debug("REST request to get Teachers by criteria: {}", criteria);
+        Page<TeacherDTO> page = teacherQueryService.findByCriteria(criteria, pageable);
         HttpHeaders headers = PaginationUtil.generatePaginationHttpHeaders(page, "/api/teachers");
         return new ResponseEntity<>(page.getContent(), headers, HttpStatus.OK);
     }
