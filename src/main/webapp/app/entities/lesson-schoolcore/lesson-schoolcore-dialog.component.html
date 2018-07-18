@@ -1,0 +1,130 @@
+<form name="editForm" role="form" novalidate (ngSubmit)="save()" #editForm="ngForm">
+
+    <div class="modal-header">
+        <h4 class="modal-title" id="myLessonLabel" jhiTranslate="schoolhipsterJwtApp.lesson.home.createOrEditLabel">Create or edit a Lesson</h4>
+        <button type="button" class="close" data-dismiss="modal" aria-hidden="true"
+                (click)="clear()">&times;</button>
+    </div>
+    <div class="modal-body">
+        <jhi-alert-error></jhi-alert-error>
+        <div class="form-group" [hidden]="!lesson.id">
+            <label for="id" jhiTranslate="global.field.id">ID</label>
+            <input type="text" class="form-control" id="id" name="id"
+                   [(ngModel)]="lesson.id" readonly />
+        </div>
+        <div class="form-group">
+            <label class="form-control-label" jhiTranslate="schoolhipsterJwtApp.lesson.plannedStartTime" for="field_plannedStartTime">Planned Start Time</label>
+            <div class="d-flex">
+                <input id="field_plannedStartTime" type="datetime-local" class="form-control" name="plannedStartTime" [(ngModel)]="lesson.plannedStartTime"
+                required/>
+            </div>
+            <div [hidden]="!(editForm.controls.plannedStartTime?.dirty && editForm.controls.plannedStartTime?.invalid)">
+                <small class="form-text text-danger"
+                   [hidden]="!editForm.controls.plannedStartTime?.errors?.required" jhiTranslate="entity.validation.required">
+                   This field is required.
+                </small>
+                <small class="form-text text-danger"
+                    [hidden]="!editForm.controls.plannedStartTime?.errors?.ZonedDateTimelocal" jhiTranslate="entity.validation.ZonedDateTimelocal">
+                    This field should be a date and time.
+                </small>
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="form-control-label" jhiTranslate="schoolhipsterJwtApp.lesson.plannedEndTime" for="field_plannedEndTime">Planned End Time</label>
+            <div class="d-flex">
+                <input id="field_plannedEndTime" type="datetime-local" class="form-control" name="plannedEndTime" [(ngModel)]="lesson.plannedEndTime"
+                required/>
+            </div>
+            <div [hidden]="!(editForm.controls.plannedEndTime?.dirty && editForm.controls.plannedEndTime?.invalid)">
+                <small class="form-text text-danger"
+                   [hidden]="!editForm.controls.plannedEndTime?.errors?.required" jhiTranslate="entity.validation.required">
+                   This field is required.
+                </small>
+                <small class="form-text text-danger"
+                    [hidden]="!editForm.controls.plannedEndTime?.errors?.ZonedDateTimelocal" jhiTranslate="entity.validation.ZonedDateTimelocal">
+                    This field should be a date and time.
+                </small>
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="form-control-label" jhiTranslate="schoolhipsterJwtApp.lesson.realStartDate" for="field_realStartDate">Real Start Date</label>
+            <div class="d-flex">
+                <input id="field_realStartDate" type="datetime-local" class="form-control" name="realStartDate" [(ngModel)]="lesson.realStartDate"
+                required/>
+            </div>
+            <div [hidden]="!(editForm.controls.realStartDate?.dirty && editForm.controls.realStartDate?.invalid)">
+                <small class="form-text text-danger"
+                   [hidden]="!editForm.controls.realStartDate?.errors?.required" jhiTranslate="entity.validation.required">
+                   This field is required.
+                </small>
+                <small class="form-text text-danger"
+                    [hidden]="!editForm.controls.realStartDate?.errors?.ZonedDateTimelocal" jhiTranslate="entity.validation.ZonedDateTimelocal">
+                    This field should be a date and time.
+                </small>
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="form-control-label" jhiTranslate="schoolhipsterJwtApp.lesson.realEndDate" for="field_realEndDate">Real End Date</label>
+            <div class="d-flex">
+                <input id="field_realEndDate" type="datetime-local" class="form-control" name="realEndDate" [(ngModel)]="lesson.realEndDate"
+                required/>
+            </div>
+            <div [hidden]="!(editForm.controls.realEndDate?.dirty && editForm.controls.realEndDate?.invalid)">
+                <small class="form-text text-danger"
+                   [hidden]="!editForm.controls.realEndDate?.errors?.required" jhiTranslate="entity.validation.required">
+                   This field is required.
+                </small>
+                <small class="form-text text-danger"
+                    [hidden]="!editForm.controls.realEndDate?.errors?.ZonedDateTimelocal" jhiTranslate="entity.validation.ZonedDateTimelocal">
+                    This field should be a date and time.
+                </small>
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="form-control-label" jhiTranslate="schoolhipsterJwtApp.lesson.topic" for="field_topic">Topic</label>
+            <input type="text" class="form-control" name="topic" id="field_topic"
+                [(ngModel)]="lesson.topic" />
+        </div>
+
+        <div class="form-group">
+            <label class="form-control-label" jhiTranslate="schoolhipsterJwtApp.lesson.teacher" for="field_teacher">Teacher</label>
+            <select class="form-control" id="field_teacher" name="teacher" [(ngModel)]="lesson.teacherId"  required>
+                <option *ngIf="!editForm.value.teacher" [ngValue]="null" selected></option>
+                <option [ngValue]="teacherOption.id" *ngFor="let teacherOption of teachers; trackBy: trackTeacherById">{{teacherOption.id}}</option>
+            </select>
+        </div>
+        <div [hidden]="!(editForm.controls.teacher?.dirty && editForm.controls.teacher?.invalid)">
+            <small class="form-text text-danger"
+                [hidden]="!editForm.controls.teacher?.errors?.required" jhiTranslate="entity.validation.required">
+                This field is required.
+            </small>
+        </div>
+        <div class="form-group">
+            <label class="form-control-label" jhiTranslate="schoolhipsterJwtApp.lesson.subject" for="field_subject">Subject</label>
+            <select class="form-control" id="field_subject" name="subject" [(ngModel)]="lesson.subjectId"  required>
+                <option *ngIf="!editForm.value.subject" [ngValue]="null" selected></option>
+                <option [ngValue]="subjectOption.id" *ngFor="let subjectOption of subjects; trackBy: trackSubjectById">{{subjectOption.id}}</option>
+            </select>
+        </div>
+        <div [hidden]="!(editForm.controls.subject?.dirty && editForm.controls.subject?.invalid)">
+            <small class="form-text text-danger"
+                [hidden]="!editForm.controls.subject?.errors?.required" jhiTranslate="entity.validation.required">
+                This field is required.
+            </small>
+        </div>
+        <div [hidden]="!(editForm.controls.students?.dirty && editForm.controls.students?.invalid)">
+            <small class="form-text text-danger"
+                [hidden]="!editForm.controls.students?.errors?.required" jhiTranslate="entity.validation.required">
+                This field is required.
+            </small>
+        </div>
+    </div>
+    <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-dismiss="modal" (click)="clear()">
+            <span class="fa fa-ban"></span>&nbsp;<span jhiTranslate="entity.action.cancel">Cancel</span>
+        </button>
+        <button type="submit" [disabled]="editForm.form.invalid || isSaving" class="btn btn-primary">
+            <span class="fa fa-save"></span>&nbsp;<span jhiTranslate="entity.action.save">Save</span>
+        </button>
+    </div>
+</form>
