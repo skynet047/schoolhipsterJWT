@@ -31,7 +31,6 @@ public class Subject implements Serializable {
     private String name;
 
     @OneToMany(mappedBy = "subject")
-    @JsonIgnore
     @Cache(usage = CacheConcurrencyStrategy.NONSTRICT_READ_WRITE)
     private Set<Lesson> lessons = new HashSet<>();
 

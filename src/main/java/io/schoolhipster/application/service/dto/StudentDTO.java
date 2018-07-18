@@ -1,6 +1,5 @@
 package io.schoolhipster.application.service.dto;
 
-
 import javax.validation.constraints.*;
 import java.io.Serializable;
 import java.util.HashSet;
@@ -87,7 +86,7 @@ public class StudentDTO implements Serializable {
         }
 
         StudentDTO studentDTO = (StudentDTO) o;
-        if(studentDTO.getId() == null || getId() == null) {
+        if (studentDTO.getId() == null || getId() == null) {
             return false;
         }
         return Objects.equals(getId(), studentDTO.getId());

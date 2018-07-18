@@ -1,11 +1,10 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
-import { ActivatedRoute } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 
-import { NgbActiveModal } from '@ng-bootstrap/ng-bootstrap';
+import { NgbActiveModal, NgbModal, NgbModalRef } from '@ng-bootstrap/ng-bootstrap';
 import { JhiEventManager } from 'ng-jhipster';
 
-import { PersonSchoolcore } from './person-schoolcore.model';
-import { PersonSchoolcorePopupService } from './person-schoolcore-popup.service';
+import { IPersonSchoolcore } from 'app/shared/model/person-schoolcore.model';
 import { PersonSchoolcoreService } from './person-schoolcore.service';
 
 @Component({
@@ -13,22 +12,20 @@ import { PersonSchoolcoreService } from './person-schoolcore.service';
     templateUrl: './person-schoolcore-delete-dialog.component.html'
 })
 export class PersonSchoolcoreDeleteDialogComponent {
-
-    person: PersonSchoolcore;
+    person: IPersonSchoolcore;
 
     constructor(
         private personService: PersonSchoolcoreService,
         public activeModal: NgbActiveModal,
         private eventManager: JhiEventManager
-    ) {
-    }
+    ) {}
 
     clear() {
         this.activeModal.dismiss('cancel');
     }
 
     confirmDelete(id: number) {
-        this.personService.delete(id).subscribe((response) => {
+        this.personService.delete(id).subscribe(response => {
             this.eventManager.broadcast({
                 name: 'personListModification',
                 content: 'Deleted an person'
@@ -43,22 +40,33 @@ export class PersonSchoolcoreDeleteDialogComponent {
     template: ''
 })
 export class PersonSchoolcoreDeletePopupComponent implements OnInit, OnDestroy {
+    private ngbModalRef: NgbModalRef;
 
-    routeSub: any;
-
-    constructor(
-        private route: ActivatedRoute,
-        private personPopupService: PersonSchoolcorePopupService
-    ) {}
+    constructor(private activatedRoute: ActivatedRoute, private router: Router, private modalService: NgbModal) {}
 
     ngOnInit() {
-        this.routeSub = this.route.params.subscribe((params) => {
-            this.personPopupService
-                .open(PersonSchoolcoreDeleteDialogComponent as Component, params['id']);
+        this.activatedRoute.data.subscribe(({ person }) => {
+            setTimeout(() => {
+                this.ngbModalRef = this.modalService.open(PersonSchoolcoreDeleteDialogComponent as Component, {
+                    size: 'lg',
+                    backdrop: 'static'
+                });
+                this.ngbModalRef.componentInstance.person = person;
+                this.ngbModalRef.result.then(
+                    result => {
+                        this.router.navigate([{ outlets: { popup: null } }], { replaceUrl: true, queryParamsHandling: 'merge' });
+                        this.ngbModalRef = null;
+                    },
+                    reason => {
+                        this.router.navigate([{ outlets: { popup: null } }], { replaceUrl: true, queryParamsHandling: 'merge' });
+                        this.ngbModalRef = null;
+                    }
+                );
+            }, 0);
         });
     }
 
     ngOnDestroy() {
-        this.routeSub.unsubscribe();
+        this.ngbModalRef = null;
     }
 }

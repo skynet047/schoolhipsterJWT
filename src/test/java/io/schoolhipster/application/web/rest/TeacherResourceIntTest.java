@@ -16,9 +16,12 @@ import io.schoolhipster.application.service.TeacherQueryService;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.data.web.PageableHandlerMethodArgumentResolver;
 import org.springframework.http.MediaType;
 import org.springframework.http.converter.json.MappingJackson2HttpMessageConverter;
@@ -28,11 +31,14 @@ import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.persistence.EntityManager;
+import java.util.ArrayList;
 import java.util.List;
+
 
 import static io.schoolhipster.application.web.rest.TestUtil.createFormattingConversionService;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.hamcrest.Matchers.hasItem;
+import static org.mockito.Mockito.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
@@ -54,8 +60,8 @@ public class TeacherResourceIntTest {
     private static final String DEFAULT_PHONE_NUMBER = "AAAAAAAAAA";
     private static final String UPDATED_PHONE_NUMBER = "BBBBBBBBBB";
 
-    private static final String DEFAULT_EMAIL = "LM@A.QiYeAr";
-    private static final String UPDATED_EMAIL = "ao@m.cpVy";
+    private static final String DEFAULT_EMAIL = "xU@6c.lI";
+    private static final String UPDATED_EMAIL = "X@2A.vy";
 
     private static final Integer DEFAULT_HOURLY_RATE = 1;
     private static final Integer UPDATED_HOURLY_RATE = 2;
@@ -65,9 +71,14 @@ public class TeacherResourceIntTest {
 
     @Autowired
     private TeacherRepository teacherRepository;
+    @Mock
+    private TeacherRepository teacherRepositoryMock;
 
     @Autowired
     private TeacherMapper teacherMapper;
+    
+    @Mock
+    private TeacherService teacherServiceMock;
 
     @Autowired
     private TeacherService teacherService;
@@ -117,10 +128,10 @@ public class TeacherResourceIntTest {
             .hourlyRate(DEFAULT_HOURLY_RATE)
             .rate(DEFAULT_RATE);
         // Add required entity
-        Subject subjects = SubjectResourceIntTest.createEntity(em);
-        em.persist(subjects);
+        Subject subject = SubjectResourceIntTest.createEntity(em);
+        em.persist(subject);
         em.flush();
-        teacher.getSubjects().add(subjects);
+        teacher.getSubjects().add(subject);
         return teacher;
     }
 
@@ -228,6 +239,37 @@ public class TeacherResourceIntTest {
             .andExpect(jsonPath("$.[*].email").value(hasItem(DEFAULT_EMAIL.toString())))
             .andExpect(jsonPath("$.[*].hourlyRate").value(hasItem(DEFAULT_HOURLY_RATE)))
             .andExpect(jsonPath("$.[*].rate").value(hasItem(DEFAULT_RATE)));
+    }
+    
+    public void getAllTeachersWithEagerRelationshipsIsEnabled() throws Exception {
+        TeacherResource teacherResource = new TeacherResource(teacherServiceMock, teacherQueryService);
+        when(teacherServiceMock.findAllWithEagerRelationships(any())).thenReturn(new PageImpl(new ArrayList<>()));
+
+        MockMvc restTeacherMockMvc = MockMvcBuilders.standaloneSetup(teacherResource)
+            .setCustomArgumentResolvers(pageableArgumentResolver)
+            .setControllerAdvice(exceptionTranslator)
+            .setConversionService(createFormattingConversionService())
+            .setMessageConverters(jacksonMessageConverter).build();
+
+        restTeacherMockMvc.perform(get("/api/teachers?eagerload=true"))
+        .andExpect(status().isOk());
+
+        verify(teacherServiceMock, times(1)).findAllWithEagerRelationships(any());
+    }
+
+    public void getAllTeachersWithEagerRelationshipsIsNotEnabled() throws Exception {
+        TeacherResource teacherResource = new TeacherResource(teacherServiceMock, teacherQueryService);
+            when(teacherServiceMock.findAllWithEagerRelationships(any())).thenReturn(new PageImpl(new ArrayList<>()));
+            MockMvc restTeacherMockMvc = MockMvcBuilders.standaloneSetup(teacherResource)
+            .setCustomArgumentResolvers(pageableArgumentResolver)
+            .setControllerAdvice(exceptionTranslator)
+            .setConversionService(createFormattingConversionService())
+            .setMessageConverters(jacksonMessageConverter).build();
+
+        restTeacherMockMvc.perform(get("/api/teachers?eagerload=true"))
+        .andExpect(status().isOk());
+
+            verify(teacherServiceMock, times(1)).findAllWithEagerRelationships(any());
     }
 
     @Test
@@ -601,7 +643,6 @@ public class TeacherResourceIntTest {
             .andExpect(jsonPath("$").isEmpty());
     }
 
-
     @Test
     @Transactional
     public void getNonExistingTeacher() throws Exception {
@@ -615,10 +656,11 @@ public class TeacherResourceIntTest {
     public void updateTeacher() throws Exception {
         // Initialize the database
         teacherRepository.saveAndFlush(teacher);
+
         int databaseSizeBeforeUpdate = teacherRepository.findAll().size();
 
         // Update the teacher
-        Teacher updatedTeacher = teacherRepository.findOne(teacher.getId());
+        Teacher updatedTeacher = teacherRepository.findById(teacher.getId()).get();
         // Disconnect from session so that the updates on updatedTeacher are not directly saved in db
         em.detach(updatedTeacher);
         updatedTeacher
@@ -659,11 +701,11 @@ public class TeacherResourceIntTest {
         restTeacherMockMvc.perform(put("/api/teachers")
             .contentType(TestUtil.APPLICATION_JSON_UTF8)
             .content(TestUtil.convertObjectToJsonBytes(teacherDTO)))
-            .andExpect(status().isCreated());
+            .andExpect(status().isBadRequest());
 
         // Validate the Teacher in the database
         List<Teacher> teacherList = teacherRepository.findAll();
-        assertThat(teacherList).hasSize(databaseSizeBeforeUpdate + 1);
+        assertThat(teacherList).hasSize(databaseSizeBeforeUpdate);
     }
 
     @Test
@@ -671,6 +713,7 @@ public class TeacherResourceIntTest {
     public void deleteTeacher() throws Exception {
         // Initialize the database
         teacherRepository.saveAndFlush(teacher);
+
         int databaseSizeBeforeDelete = teacherRepository.findAll().size();
 
         // Get the teacher

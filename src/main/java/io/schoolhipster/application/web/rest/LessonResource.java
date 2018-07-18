@@ -74,7 +74,7 @@ public class LessonResource {
     public ResponseEntity<LessonDTO> updateLesson(@Valid @RequestBody LessonDTO lessonDTO) throws URISyntaxException {
         log.debug("REST request to update Lesson : {}", lessonDTO);
         if (lessonDTO.getId() == null) {
-            return createLesson(lessonDTO);
+            throw new BadRequestAlertException("Invalid id", ENTITY_NAME, "idnull");
         }
         LessonDTO result = lessonService.save(lessonDTO);
         return ResponseEntity.ok()
@@ -107,8 +107,8 @@ public class LessonResource {
     @Timed
     public ResponseEntity<LessonDTO> getLesson(@PathVariable Long id) {
         log.debug("REST request to get Lesson : {}", id);
-        LessonDTO lessonDTO = lessonService.findOne(id);
-        return ResponseUtil.wrapOrNotFound(Optional.ofNullable(lessonDTO));
+        Optional<LessonDTO> lessonDTO = lessonService.findOne(id);
+        return ResponseUtil.wrapOrNotFound(lessonDTO);
     }
 
     /**

@@ -1,48 +1,33 @@
 import { NgModule, CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 import { RouterModule } from '@angular/router';
 
-import { SchoolhipsterJwtSharedModule } from '../../shared';
+import { SchoolhipsterJwtSharedModule } from 'app/shared';
 import {
-    PersonSchoolcoreService,
-    PersonSchoolcorePopupService,
     PersonSchoolcoreComponent,
     PersonSchoolcoreDetailComponent,
-    PersonSchoolcoreDialogComponent,
-    PersonSchoolcorePopupComponent,
+    PersonSchoolcoreUpdateComponent,
     PersonSchoolcoreDeletePopupComponent,
     PersonSchoolcoreDeleteDialogComponent,
     personRoute,
-    personPopupRoute,
+    personPopupRoute
 } from './';
 
-const ENTITY_STATES = [
-    ...personRoute,
-    ...personPopupRoute,
-];
+const ENTITY_STATES = [...personRoute, ...personPopupRoute];
 
 @NgModule({
-    imports: [
-        SchoolhipsterJwtSharedModule,
-        RouterModule.forChild(ENTITY_STATES)
-    ],
+    imports: [SchoolhipsterJwtSharedModule, RouterModule.forChild(ENTITY_STATES)],
     declarations: [
         PersonSchoolcoreComponent,
         PersonSchoolcoreDetailComponent,
-        PersonSchoolcoreDialogComponent,
+        PersonSchoolcoreUpdateComponent,
         PersonSchoolcoreDeleteDialogComponent,
-        PersonSchoolcorePopupComponent,
-        PersonSchoolcoreDeletePopupComponent,
+        PersonSchoolcoreDeletePopupComponent
     ],
     entryComponents: [
         PersonSchoolcoreComponent,
-        PersonSchoolcoreDialogComponent,
-        PersonSchoolcorePopupComponent,
+        PersonSchoolcoreUpdateComponent,
         PersonSchoolcoreDeleteDialogComponent,
-        PersonSchoolcoreDeletePopupComponent,
-    ],
-    providers: [
-        PersonSchoolcoreService,
-        PersonSchoolcorePopupService,
+        PersonSchoolcoreDeletePopupComponent
     ],
     schemas: [CUSTOM_ELEMENTS_SCHEMA]
 })

@@ -1,11 +1,8 @@
 package io.schoolhipster.application.service.dto;
 
-
 import java.time.ZonedDateTime;
 import javax.validation.constraints.*;
 import java.io.Serializable;
-import java.util.HashSet;
-import java.util.Set;
 import java.util.Objects;
 
 /**
@@ -107,7 +104,7 @@ public class LessonDTO implements Serializable {
         }
 
         LessonDTO lessonDTO = (LessonDTO) o;
-        if(lessonDTO.getId() == null || getId() == null) {
+        if (lessonDTO.getId() == null || getId() == null) {
             return false;
         }
         return Objects.equals(getId(), lessonDTO.getId());
@@ -127,6 +124,8 @@ public class LessonDTO implements Serializable {
             ", realStartDate='" + getRealStartDate() + "'" +
             ", realEndDate='" + getRealEndDate() + "'" +
             ", topic='" + getTopic() + "'" +
+            ", teacher=" + getTeacherId() +
+            ", subject=" + getSubjectId() +
             "}";
     }
 }

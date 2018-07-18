@@ -1,7 +1,9 @@
 package io.schoolhipster.application.service;
 
 import io.schoolhipster.application.domain.Person;
+
 import java.util.List;
+import java.util.Optional;
 
 /**
  * Service Interface for managing Person.
@@ -23,13 +25,14 @@ public interface PersonService {
      */
     List<Person> findAll();
 
+
     /**
      * Get the "id" person.
      *
      * @param id the id of the entity
      * @return the entity
      */
-    Person findOne(Long id);
+    Optional<Person> findOne(Long id);
 
     /**
      * Delete the "id" person.

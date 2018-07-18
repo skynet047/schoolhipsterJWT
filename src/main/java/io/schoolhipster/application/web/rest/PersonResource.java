@@ -74,7 +74,7 @@ public class PersonResource {
     public ResponseEntity<Person> updatePerson(@Valid @RequestBody Person person) throws URISyntaxException {
         log.debug("REST request to update Person : {}", person);
         if (person.getId() == null) {
-            return createPerson(person);
+            throw new BadRequestAlertException("Invalid id", ENTITY_NAME, "idnull");
         }
         Person result = personService.save(person);
         return ResponseEntity.ok()
@@ -106,8 +106,8 @@ public class PersonResource {
     @Timed
     public ResponseEntity<Person> getPerson(@PathVariable Long id) {
         log.debug("REST request to get Person : {}", id);
-        Person person = personService.findOne(id);
-        return ResponseUtil.wrapOrNotFound(Optional.ofNullable(person));
+        Optional<Person> person = personService.findOne(id);
+        return ResponseUtil.wrapOrNotFound(person);
     }
 
     /**

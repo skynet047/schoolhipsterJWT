@@ -1,92 +1,80 @@
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpResponse } from '@angular/common/http';
-import { Observable } from 'rxjs/Observable';
-import { SERVER_API_URL } from '../../app.constants';
+import { Observable } from 'rxjs';
+import * as moment from 'moment';
+import { DATE_FORMAT } from 'app/shared/constants/input.constants';
+import { map } from 'rxjs/operators';
 
-import { JhiDateUtils } from 'ng-jhipster';
+import { SERVER_API_URL } from 'app/app.constants';
+import { createRequestOption } from 'app/shared';
+import { ILessonSchoolcore } from 'app/shared/model/lesson-schoolcore.model';
 
-import { LessonSchoolcore } from './lesson-schoolcore.model';
-import { createRequestOption } from '../../shared';
+type EntityResponseType = HttpResponse<ILessonSchoolcore>;
+type EntityArrayResponseType = HttpResponse<ILessonSchoolcore[]>;
 
-export type EntityResponseType = HttpResponse<LessonSchoolcore>;
-
-@Injectable()
+@Injectable({ providedIn: 'root' })
 export class LessonSchoolcoreService {
+    private resourceUrl = SERVER_API_URL + 'api/lessons';
 
-    private resourceUrl =  SERVER_API_URL + 'api/lessons';
+    constructor(private http: HttpClient) {}
 
-    constructor(private http: HttpClient, private dateUtils: JhiDateUtils) { }
-
-    create(lesson: LessonSchoolcore): Observable<EntityResponseType> {
-        const copy = this.convert(lesson);
-        return this.http.post<LessonSchoolcore>(this.resourceUrl, copy, { observe: 'response' })
-            .map((res: EntityResponseType) => this.convertResponse(res));
+    create(lesson: ILessonSchoolcore): Observable<EntityResponseType> {
+        const copy = this.convertDateFromClient(lesson);
+        return this.http
+            .post<ILessonSchoolcore>(this.resourceUrl, copy, { observe: 'response' })
+            .pipe(map((res: EntityResponseType) => this.convertDateFromServer(res)));
     }
 
-    update(lesson: LessonSchoolcore): Observable<EntityResponseType> {
-        const copy = this.convert(lesson);
-        return this.http.put<LessonSchoolcore>(this.resourceUrl, copy, { observe: 'response' })
-            .map((res: EntityResponseType) => this.convertResponse(res));
+    update(lesson: ILessonSchoolcore): Observable<EntityResponseType> {
+        const copy = this.convertDateFromClient(lesson);
+        return this.http
+            .put<ILessonSchoolcore>(this.resourceUrl, copy, { observe: 'response' })
+            .pipe(map((res: EntityResponseType) => this.convertDateFromServer(res)));
     }
 
     find(id: number): Observable<EntityResponseType> {
-        return this.http.get<LessonSchoolcore>(`${this.resourceUrl}/${id}`, { observe: 'response'})
-            .map((res: EntityResponseType) => this.convertResponse(res));
+        return this.http
+            .get<ILessonSchoolcore>(`${this.resourceUrl}/${id}`, { observe: 'response' })
+            .pipe(map((res: EntityResponseType) => this.convertDateFromServer(res)));
     }
 
-    query(req?: any): Observable<HttpResponse<LessonSchoolcore[]>> {
+    query(req?: any): Observable<EntityArrayResponseType> {
         const options = createRequestOption(req);
-        return this.http.get<LessonSchoolcore[]>(this.resourceUrl, { params: options, observe: 'response' })
-            .map((res: HttpResponse<LessonSchoolcore[]>) => this.convertArrayResponse(res));
+        return this.http
+            .get<ILessonSchoolcore[]>(this.resourceUrl, { params: options, observe: 'response' })
+            .pipe(map((res: EntityArrayResponseType) => this.convertDateArrayFromServer(res)));
     }
 
     delete(id: number): Observable<HttpResponse<any>> {
-        return this.http.delete<any>(`${this.resourceUrl}/${id}`, { observe: 'response'});
+        return this.http.delete<any>(`${this.resourceUrl}/${id}`, { observe: 'response' });
     }
 
-    private convertResponse(res: EntityResponseType): EntityResponseType {
-        const body: LessonSchoolcore = this.convertItemFromServer(res.body);
-        return res.clone({body});
-    }
-
-    private convertArrayResponse(res: HttpResponse<LessonSchoolcore[]>): HttpResponse<LessonSchoolcore[]> {
-        const jsonResponse: LessonSchoolcore[] = res.body;
-        const body: LessonSchoolcore[] = [];
-        for (let i = 0; i < jsonResponse.length; i++) {
-            body.push(this.convertItemFromServer(jsonResponse[i]));
-        }
-        return res.clone({body});
-    }
-
-    /**
-     * Convert a returned JSON object to LessonSchoolcore.
-     */
-    private convertItemFromServer(lesson: LessonSchoolcore): LessonSchoolcore {
-        const copy: LessonSchoolcore = Object.assign({}, lesson);
-        copy.plannedStartTime = this.dateUtils
-            .convertDateTimeFromServer(lesson.plannedStartTime);
-        copy.plannedEndTime = this.dateUtils
-            .convertDateTimeFromServer(lesson.plannedEndTime);
-        copy.realStartDate = this.dateUtils
-            .convertDateTimeFromServer(lesson.realStartDate);
-        copy.realEndDate = this.dateUtils
-            .convertDateTimeFromServer(lesson.realEndDate);
+    private convertDateFromClient(lesson: ILessonSchoolcore): ILessonSchoolcore {
+        const copy: ILessonSchoolcore = Object.assign({}, lesson, {
+            plannedStartTime:
+                lesson.plannedStartTime != null && lesson.plannedStartTime.isValid() ? lesson.plannedStartTime.toJSON() : null,
+            plannedEndTime: lesson.plannedEndTime != null && lesson.plannedEndTime.isValid() ? lesson.plannedEndTime.toJSON() : null,
+            realStartDate: lesson.realStartDate != null && lesson.realStartDate.isValid() ? lesson.realStartDate.toJSON() : null,
+            realEndDate: lesson.realEndDate != null && lesson.realEndDate.isValid() ? lesson.realEndDate.toJSON() : null
+        });
         return copy;
     }
 
-    /**
-     * Convert a LessonSchoolcore to a JSON which can be sent to the server.
-     */
-    private convert(lesson: LessonSchoolcore): LessonSchoolcore {
-        const copy: LessonSchoolcore = Object.assign({}, lesson);
+    private convertDateFromServer(res: EntityResponseType): EntityResponseType {
+        res.body.plannedStartTime = res.body.plannedStartTime != null ? moment(res.body.plannedStartTime) : null;
+        res.body.plannedEndTime = res.body.plannedEndTime != null ? moment(res.body.plannedEndTime) : null;
+        res.body.realStartDate = res.body.realStartDate != null ? moment(res.body.realStartDate) : null;
+        res.body.realEndDate = res.body.realEndDate != null ? moment(res.body.realEndDate) : null;
+        return res;
+    }
 
-        copy.plannedStartTime = this.dateUtils.toDate(lesson.plannedStartTime);
-
-        copy.plannedEndTime = this.dateUtils.toDate(lesson.plannedEndTime);
-
-        copy.realStartDate = this.dateUtils.toDate(lesson.realStartDate);
-
-        copy.realEndDate = this.dateUtils.toDate(lesson.realEndDate);
-        return copy;
+    private convertDateArrayFromServer(res: EntityArrayResponseType): EntityArrayResponseType {
+        res.body.forEach((lesson: ILessonSchoolcore) => {
+            lesson.plannedStartTime = lesson.plannedStartTime != null ? moment(lesson.plannedStartTime) : null;
+            lesson.plannedEndTime = lesson.plannedEndTime != null ? moment(lesson.plannedEndTime) : null;
+            lesson.realStartDate = lesson.realStartDate != null ? moment(lesson.realStartDate) : null;
+            lesson.realEndDate = lesson.realEndDate != null ? moment(lesson.realEndDate) : null;
+        });
+        return res;
     }
 }

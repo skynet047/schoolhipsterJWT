@@ -1,35 +1,33 @@
 <div>
-    <h2>
+    <h2 id="page-heading">
         <span jhiTranslate="schoolhipsterJwtApp.lesson.home.title">Lessons</span>
-        <button class="btn btn-primary float-right jh-create-entity create-lesson-schoolcore" [routerLink]="['/', { outlets: { popup: ['lesson-schoolcore-new'] } }]">
-            <span class="fa fa-plus"></span>
+        <button id="jh-create-entity" class="btn btn-primary float-right jh-create-entity create-lesson-schoolcore" [routerLink]="['/lesson-schoolcore/new']">
+            <fa-icon [icon]="'plus'"></fa-icon>
             <span  jhiTranslate="schoolhipsterJwtApp.lesson.home.createLabel">
             Create new Lesson
             </span>
         </button>
     </h2>
     <jhi-alert></jhi-alert>
-    <div class="row">
-    </div>
     <br/>
     <div class="table-responsive" *ngIf="lessons">
         <table class="table table-striped">
             <thead>
             <tr jhiSort [(predicate)]="predicate" [(ascending)]="reverse" [callback]="transition.bind(this)">
-            <th jhiSortBy="id"><span jhiTranslate="global.field.id">ID</span> <span class="fa fa-sort"></span></th>
-            <th jhiSortBy="plannedStartTime"><span jhiTranslate="schoolhipsterJwtApp.lesson.plannedStartTime">Planned Start Time</span> <span class="fa fa-sort"></span></th>
-            <th jhiSortBy="plannedEndTime"><span jhiTranslate="schoolhipsterJwtApp.lesson.plannedEndTime">Planned End Time</span> <span class="fa fa-sort"></span></th>
-            <th jhiSortBy="realStartDate"><span jhiTranslate="schoolhipsterJwtApp.lesson.realStartDate">Real Start Date</span> <span class="fa fa-sort"></span></th>
-            <th jhiSortBy="realEndDate"><span jhiTranslate="schoolhipsterJwtApp.lesson.realEndDate">Real End Date</span> <span class="fa fa-sort"></span></th>
-            <th jhiSortBy="topic"><span jhiTranslate="schoolhipsterJwtApp.lesson.topic">Topic</span> <span class="fa fa-sort"></span></th>
-            <th jhiSortBy="teacherId"><span jhiTranslate="schoolhipsterJwtApp.lesson.teacher">Teacher</span> <span class="fa fa-sort"></span></th>
-            <th jhiSortBy="subjectId"><span jhiTranslate="schoolhipsterJwtApp.lesson.subject">Subject</span> <span class="fa fa-sort"></span></th>
+            <th jhiSortBy="id"><span jhiTranslate="global.field.id">ID</span> <fa-icon [icon]="'sort'"></fa-icon></th>
+            <th jhiSortBy="plannedStartTime"><span jhiTranslate="schoolhipsterJwtApp.lesson.plannedStartTime">Planned Start Time</span> <fa-icon [icon]="'sort'"></fa-icon></th>
+            <th jhiSortBy="plannedEndTime"><span jhiTranslate="schoolhipsterJwtApp.lesson.plannedEndTime">Planned End Time</span> <fa-icon [icon]="'sort'"></fa-icon></th>
+            <th jhiSortBy="realStartDate"><span jhiTranslate="schoolhipsterJwtApp.lesson.realStartDate">Real Start Date</span> <fa-icon [icon]="'sort'"></fa-icon></th>
+            <th jhiSortBy="realEndDate"><span jhiTranslate="schoolhipsterJwtApp.lesson.realEndDate">Real End Date</span> <fa-icon [icon]="'sort'"></fa-icon></th>
+            <th jhiSortBy="topic"><span jhiTranslate="schoolhipsterJwtApp.lesson.topic">Topic</span> <fa-icon [icon]="'sort'"></fa-icon></th>
+            <th jhiSortBy="teacherId"><span jhiTranslate="schoolhipsterJwtApp.lesson.teacher">Teacher</span> <fa-icon [icon]="'sort'"></fa-icon></th>
+            <th jhiSortBy="subjectId"><span jhiTranslate="schoolhipsterJwtApp.lesson.subject">Subject</span> <fa-icon [icon]="'sort'"></fa-icon></th>
             <th></th>
             </tr>
             </thead>
             <tbody>
             <tr *ngFor="let lesson of lessons ;trackBy: trackId">
-                <td><a [routerLink]="['../lesson-schoolcore', lesson.id ]">{{lesson.id}}</a></td>
+                <td><a [routerLink]="['/lesson-schoolcore', lesson.id, 'view' ]">{{lesson.id}}</a></td>
                 <td>{{lesson.plannedStartTime | date:'medium'}}</td>
                 <td>{{lesson.plannedEndTime | date:'medium'}}</td>
                 <td>{{lesson.realStartDate | date:'medium'}}</td>
@@ -37,28 +35,26 @@
                 <td>{{lesson.topic}}</td>
                 <td>
                     <div *ngIf="lesson.teacherId">
-                        <a [routerLink]="['../teacher-schoolcore', lesson.teacherId  ]" >{{lesson.teacherId}}</a>
+                        <a [routerLink]="['../teacher-schoolcore', lesson.teacherId , 'view' ]" >{{lesson.teacherId}}</a>
                     </div>
                 </td>
                 <td>
                     <div *ngIf="lesson.subjectId">
-                        <a [routerLink]="['../subject-schoolcore', lesson.subjectId  ]" >{{lesson.subjectId}}</a>
+                        <a [routerLink]="['../subject-schoolcore', lesson.subjectId , 'view' ]" >{{lesson.subjectId}}</a>
                     </div>
                 </td>
                 <td class="text-right">
                     <div class="btn-group flex-btn-group-container">
                         <button type="submit"
-                                [routerLink]="['../lesson-schoolcore', lesson.id ]"
+                                [routerLink]="['/lesson-schoolcore', lesson.id, 'view' ]"
                                 class="btn btn-info btn-sm">
-                            <span class="fa fa-eye"></span>
+                            <fa-icon [icon]="'eye'"></fa-icon>
                             <span class="d-none d-md-inline" jhiTranslate="entity.action.view">View</span>
                         </button>
                         <button type="submit"
-                                [routerLink]="['/', { outlets: { popup: 'lesson-schoolcore/'+ lesson.id + '/edit'} }]"
-                                replaceUrl="true"
-                                queryParamsHandling="merge"
+                                [routerLink]="['/lesson-schoolcore', lesson.id, 'edit']"
                                 class="btn btn-primary btn-sm">
-                            <span class="fa fa-pencil"></span>
+                            <fa-icon [icon]="'pencil-alt'"></fa-icon>
                             <span class="d-none d-md-inline" jhiTranslate="entity.action.edit">Edit</span>
                         </button>
                         <button type="submit"
@@ -66,7 +62,7 @@
                                 replaceUrl="true"
                                 queryParamsHandling="merge"
                                 class="btn btn-danger btn-sm">
-                            <span class="fa fa-remove"></span>
+                            <fa-icon [icon]="'times'"></fa-icon>
                             <span class="d-none d-md-inline" jhiTranslate="entity.action.delete">Delete</span>
                         </button>
                     </div>

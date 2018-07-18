@@ -1,8 +1,11 @@
 package io.schoolhipster.application.service;
 
 import io.schoolhipster.application.service.dto.TeacherDTO;
+
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+
+import java.util.Optional;
 
 /**
  * Service Interface for managing Teacher.
@@ -26,12 +29,19 @@ public interface TeacherService {
     Page<TeacherDTO> findAll(Pageable pageable);
 
     /**
+     * Get all the Teacher with eager load of many-to-many relationships.
+     *
+     * @return the list of entities
+     */
+    Page<TeacherDTO> findAllWithEagerRelationships(Pageable pageable);
+    
+    /**
      * Get the "id" teacher.
      *
      * @param id the id of the entity
      * @return the entity
      */
-    TeacherDTO findOne(Long id);
+    Optional<TeacherDTO> findOne(Long id);
 
     /**
      * Delete the "id" teacher.

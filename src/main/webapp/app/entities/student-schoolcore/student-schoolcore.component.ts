@@ -1,19 +1,20 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
-import { HttpResponse, HttpErrorResponse } from '@angular/common/http';
-import { Subscription } from 'rxjs/Subscription';
+import { HttpErrorResponse, HttpHeaders, HttpResponse } from '@angular/common/http';
+import { Subscription } from 'rxjs';
 import { JhiEventManager, JhiParseLinks, JhiAlertService } from 'ng-jhipster';
 
-import { StudentSchoolcore } from './student-schoolcore.model';
+import { IStudentSchoolcore } from 'app/shared/model/student-schoolcore.model';
+import { Principal } from 'app/core';
+
+import { ITEMS_PER_PAGE } from 'app/shared';
 import { StudentSchoolcoreService } from './student-schoolcore.service';
-import { ITEMS_PER_PAGE, Principal } from '../../shared';
 
 @Component({
     selector: 'jhi-student-schoolcore',
     templateUrl: './student-schoolcore.component.html'
 })
 export class StudentSchoolcoreComponent implements OnInit, OnDestroy {
-
-    students: StudentSchoolcore[];
+    students: IStudentSchoolcore[];
     currentAccount: any;
     eventSubscriber: Subscription;
     itemsPerPage: number;
@@ -42,14 +43,16 @@ export class StudentSchoolcoreComponent implements OnInit, OnDestroy {
     }
 
     loadAll() {
-        this.studentService.query({
-            page: this.page,
-            size: this.itemsPerPage,
-            sort: this.sort()
-        }).subscribe(
-            (res: HttpResponse<StudentSchoolcore[]>) => this.onSuccess(res.body, res.headers),
-            (res: HttpErrorResponse) => this.onError(res.message)
-        );
+        this.studentService
+            .query({
+                page: this.page,
+                size: this.itemsPerPage,
+                sort: this.sort()
+            })
+            .subscribe(
+                (res: HttpResponse<IStudentSchoolcore[]>) => this.paginateStudents(res.body, res.headers),
+                (res: HttpErrorResponse) => this.onError(res.message)
+            );
     }
 
     reset() {
@@ -62,9 +65,10 @@ export class StudentSchoolcoreComponent implements OnInit, OnDestroy {
         this.page = page;
         this.loadAll();
     }
+
     ngOnInit() {
         this.loadAll();
-        this.principal.identity().then((account) => {
+        this.principal.identity().then(account => {
             this.currentAccount = account;
         });
         this.registerChangeInStudents();
@@ -74,11 +78,12 @@ export class StudentSchoolcoreComponent implements OnInit, OnDestroy {
         this.eventManager.destroy(this.eventSubscriber);
     }
 
-    trackId(index: number, item: StudentSchoolcore) {
+    trackId(index: number, item: IStudentSchoolcore) {
         return item.id;
     }
+
     registerChangeInStudents() {
-        this.eventSubscriber = this.eventManager.subscribe('studentListModification', (response) => this.reset());
+        this.eventSubscriber = this.eventManager.subscribe('studentListModification', response => this.reset());
     }
 
     sort() {
@@ -89,15 +94,15 @@ export class StudentSchoolcoreComponent implements OnInit, OnDestroy {
         return result;
     }
 
-    private onSuccess(data, headers) {
+    private paginateStudents(data: IStudentSchoolcore[], headers: HttpHeaders) {
         this.links = this.parseLinks.parse(headers.get('link'));
-        this.totalItems = headers.get('X-Total-Count');
+        this.totalItems = parseInt(headers.get('X-Total-Count'), 10);
         for (let i = 0; i < data.length; i++) {
             this.students.push(data[i]);
         }
     }
 
-    private onError(error) {
-        this.jhiAlertService.error(error.message, null, null);
+    private onError(errorMessage: string) {
+        this.jhiAlertService.error(errorMessage, null, null);
     }
 }

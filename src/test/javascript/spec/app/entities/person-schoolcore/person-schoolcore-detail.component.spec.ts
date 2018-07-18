@@ -1,54 +1,40 @@
 /* tslint:disable max-line-length */
-import { ComponentFixture, TestBed, async } from '@angular/core/testing';
-import { HttpResponse } from '@angular/common/http';
-import { Observable } from 'rxjs/Observable';
+import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { ActivatedRoute } from '@angular/router';
+import { of } from 'rxjs';
 
 import { SchoolhipsterJwtTestModule } from '../../../test.module';
-import { PersonSchoolcoreDetailComponent } from '../../../../../../main/webapp/app/entities/person-schoolcore/person-schoolcore-detail.component';
-import { PersonSchoolcoreService } from '../../../../../../main/webapp/app/entities/person-schoolcore/person-schoolcore.service';
-import { PersonSchoolcore } from '../../../../../../main/webapp/app/entities/person-schoolcore/person-schoolcore.model';
+import { PersonSchoolcoreDetailComponent } from 'app/entities/person-schoolcore/person-schoolcore-detail.component';
+import { PersonSchoolcore } from 'app/shared/model/person-schoolcore.model';
 
 describe('Component Tests', () => {
-
     describe('PersonSchoolcore Management Detail Component', () => {
         let comp: PersonSchoolcoreDetailComponent;
         let fixture: ComponentFixture<PersonSchoolcoreDetailComponent>;
-        let service: PersonSchoolcoreService;
+        const route = ({ data: of({ person: new PersonSchoolcore(123) }) } as any) as ActivatedRoute;
 
-        beforeEach(async(() => {
+        beforeEach(() => {
             TestBed.configureTestingModule({
                 imports: [SchoolhipsterJwtTestModule],
                 declarations: [PersonSchoolcoreDetailComponent],
-                providers: [
-                    PersonSchoolcoreService
-                ]
+                providers: [{ provide: ActivatedRoute, useValue: route }]
             })
-            .overrideTemplate(PersonSchoolcoreDetailComponent, '')
-            .compileComponents();
-        }));
-
-        beforeEach(() => {
+                .overrideTemplate(PersonSchoolcoreDetailComponent, '')
+                .compileComponents();
             fixture = TestBed.createComponent(PersonSchoolcoreDetailComponent);
             comp = fixture.componentInstance;
-            service = fixture.debugElement.injector.get(PersonSchoolcoreService);
         });
 
         describe('OnInit', () => {
             it('Should call load all on init', () => {
                 // GIVEN
 
-                spyOn(service, 'find').and.returnValue(Observable.of(new HttpResponse({
-                    body: new PersonSchoolcore(123)
-                })));
-
                 // WHEN
                 comp.ngOnInit();
 
                 // THEN
-                expect(service.find).toHaveBeenCalledWith(123);
-                expect(comp.person).toEqual(jasmine.objectContaining({id: 123}));
+                expect(comp.person).toEqual(jasmine.objectContaining({ id: 123 }));
             });
         });
     });
-
 });

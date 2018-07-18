@@ -1,6 +1,7 @@
 package io.schoolhipster.application.domain;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
 
@@ -48,10 +49,12 @@ public class Lesson implements Serializable {
 
     @ManyToOne(optional = false)
     @NotNull
+    @JsonIgnoreProperties("lessons")
     private Teacher teacher;
 
     @ManyToOne(optional = false)
     @NotNull
+    @JsonIgnoreProperties("lessons")
     private Subject subject;
 
     @ManyToMany(mappedBy = "lessons")

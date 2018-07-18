@@ -55,12 +55,11 @@ public class Teacher implements Serializable {
     @Cache(usage = CacheConcurrencyStrategy.NONSTRICT_READ_WRITE)
     @NotNull
     @JoinTable(name = "teacher_subjects",
-               joinColumns = @JoinColumn(name="teachers_id", referencedColumnName="id"),
-               inverseJoinColumns = @JoinColumn(name="subjects_id", referencedColumnName="id"))
+               joinColumns = @JoinColumn(name = "teachers_id", referencedColumnName = "id"),
+               inverseJoinColumns = @JoinColumn(name = "subjects_id", referencedColumnName = "id"))
     private Set<Subject> subjects = new HashSet<>();
 
     @OneToMany(mappedBy = "teacher")
-    @JsonIgnore
     @Cache(usage = CacheConcurrencyStrategy.NONSTRICT_READ_WRITE)
     private Set<Lesson> lessons = new HashSet<>();
 

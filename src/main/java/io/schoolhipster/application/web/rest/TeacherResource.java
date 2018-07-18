@@ -79,7 +79,7 @@ public class TeacherResource {
     public ResponseEntity<TeacherDTO> updateTeacher(@Valid @RequestBody TeacherDTO teacherDTO) throws URISyntaxException {
         log.debug("REST request to update Teacher : {}", teacherDTO);
         if (teacherDTO.getId() == null) {
-            return createTeacher(teacherDTO);
+            throw new BadRequestAlertException("Invalid id", ENTITY_NAME, "idnull");
         }
         TeacherDTO result = teacherService.save(teacherDTO);
         return ResponseEntity.ok()
@@ -113,8 +113,8 @@ public class TeacherResource {
     @Timed
     public ResponseEntity<TeacherDTO> getTeacher(@PathVariable Long id) {
         log.debug("REST request to get Teacher : {}", id);
-        TeacherDTO teacherDTO = teacherService.findOne(id);
-        return ResponseUtil.wrapOrNotFound(Optional.ofNullable(teacherDTO));
+        Optional<TeacherDTO> teacherDTO = teacherService.findOne(id);
+        return ResponseUtil.wrapOrNotFound(teacherDTO);
     }
 
     /**

@@ -25,6 +25,7 @@ import org.springframework.transaction.annotation.Transactional;
 import javax.persistence.EntityManager;
 import java.util.List;
 
+
 import static io.schoolhipster.application.web.rest.TestUtil.createFormattingConversionService;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.hamcrest.Matchers.hasItem;
@@ -45,6 +46,7 @@ public class SubjectResourceIntTest {
 
     @Autowired
     private SubjectRepository subjectRepository;
+
 
     @Autowired
     private SubjectMapper subjectMapper;
@@ -164,6 +166,7 @@ public class SubjectResourceIntTest {
             .andExpect(jsonPath("$.[*].id").value(hasItem(subject.getId().intValue())))
             .andExpect(jsonPath("$.[*].name").value(hasItem(DEFAULT_NAME.toString())));
     }
+    
 
     @Test
     @Transactional
@@ -178,7 +181,6 @@ public class SubjectResourceIntTest {
             .andExpect(jsonPath("$.id").value(subject.getId().intValue()))
             .andExpect(jsonPath("$.name").value(DEFAULT_NAME.toString()));
     }
-
     @Test
     @Transactional
     public void getNonExistingSubject() throws Exception {
@@ -192,10 +194,11 @@ public class SubjectResourceIntTest {
     public void updateSubject() throws Exception {
         // Initialize the database
         subjectRepository.saveAndFlush(subject);
+
         int databaseSizeBeforeUpdate = subjectRepository.findAll().size();
 
         // Update the subject
-        Subject updatedSubject = subjectRepository.findOne(subject.getId());
+        Subject updatedSubject = subjectRepository.findById(subject.getId()).get();
         // Disconnect from session so that the updates on updatedSubject are not directly saved in db
         em.detach(updatedSubject);
         updatedSubject
@@ -226,11 +229,11 @@ public class SubjectResourceIntTest {
         restSubjectMockMvc.perform(put("/api/subjects")
             .contentType(TestUtil.APPLICATION_JSON_UTF8)
             .content(TestUtil.convertObjectToJsonBytes(subjectDTO)))
-            .andExpect(status().isCreated());
+            .andExpect(status().isBadRequest());
 
         // Validate the Subject in the database
         List<Subject> subjectList = subjectRepository.findAll();
-        assertThat(subjectList).hasSize(databaseSizeBeforeUpdate + 1);
+        assertThat(subjectList).hasSize(databaseSizeBeforeUpdate);
     }
 
     @Test
@@ -238,6 +241,7 @@ public class SubjectResourceIntTest {
     public void deleteSubject() throws Exception {
         // Initialize the database
         subjectRepository.saveAndFlush(subject);
+
         int databaseSizeBeforeDelete = subjectRepository.findAll().size();
 
         // Get the subject

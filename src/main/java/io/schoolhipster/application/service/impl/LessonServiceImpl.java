@@ -7,12 +7,14 @@ import io.schoolhipster.application.service.dto.LessonDTO;
 import io.schoolhipster.application.service.mapper.LessonMapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 
+import java.util.Optional;
 /**
  * Service Implementation for managing Lesson.
  */
@@ -59,6 +61,7 @@ public class LessonServiceImpl implements LessonService {
             .map(lessonMapper::toDto);
     }
 
+
     /**
      * Get one lesson by id.
      *
@@ -67,10 +70,10 @@ public class LessonServiceImpl implements LessonService {
      */
     @Override
     @Transactional(readOnly = true)
-    public LessonDTO findOne(Long id) {
+    public Optional<LessonDTO> findOne(Long id) {
         log.debug("Request to get Lesson : {}", id);
-        Lesson lesson = lessonRepository.findOne(id);
-        return lessonMapper.toDto(lesson);
+        return lessonRepository.findById(id)
+            .map(lessonMapper::toDto);
     }
 
     /**
@@ -81,6 +84,6 @@ public class LessonServiceImpl implements LessonService {
     @Override
     public void delete(Long id) {
         log.debug("Request to delete Lesson : {}", id);
-        lessonRepository.delete(id);
+        lessonRepository.deleteById(id);
     }
 }
