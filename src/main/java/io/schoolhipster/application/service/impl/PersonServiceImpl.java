@@ -5,11 +5,13 @@ import io.schoolhipster.application.domain.Person;
 import io.schoolhipster.application.repository.PersonRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.List;
 
+import java.util.List;
+import java.util.Optional;
 /**
  * Service Implementation for managing Person.
  */
@@ -33,8 +35,7 @@ public class PersonServiceImpl implements PersonService {
      */
     @Override
     public Person save(Person person) {
-        log.debug("Request to save Person : {}", person);
-        return personRepository.save(person);
+        log.debug("Request to save Person : {}", person);        return personRepository.save(person);
     }
 
     /**
@@ -49,6 +50,7 @@ public class PersonServiceImpl implements PersonService {
         return personRepository.findAll();
     }
 
+
     /**
      * Get one person by id.
      *
@@ -57,9 +59,9 @@ public class PersonServiceImpl implements PersonService {
      */
     @Override
     @Transactional(readOnly = true)
-    public Person findOne(Long id) {
+    public Optional<Person> findOne(Long id) {
         log.debug("Request to get Person : {}", id);
-        return personRepository.findOne(id);
+        return personRepository.findById(id);
     }
 
     /**
@@ -70,6 +72,6 @@ public class PersonServiceImpl implements PersonService {
     @Override
     public void delete(Long id) {
         log.debug("Request to delete Person : {}", id);
-        personRepository.delete(id);
+        personRepository.deleteById(id);
     }
 }

@@ -2,7 +2,6 @@ package io.schoolhipster.application.web.rest;
 
 import com.codahale.metrics.annotation.Timed;
 import io.schoolhipster.application.domain.Subject;
-
 import io.schoolhipster.application.repository.SubjectRepository;
 import io.schoolhipster.application.web.rest.errors.BadRequestAlertException;
 import io.schoolhipster.application.web.rest.util.HeaderUtil;
@@ -55,6 +54,7 @@ public class SubjectResource {
         if (subjectDTO.getId() != null) {
             throw new BadRequestAlertException("A new subject cannot already have an ID", ENTITY_NAME, "idexists");
         }
+
         Subject subject = subjectMapper.toEntity(subjectDTO);
         subject = subjectRepository.save(subject);
         SubjectDTO result = subjectMapper.toDto(subject);
@@ -77,8 +77,9 @@ public class SubjectResource {
     public ResponseEntity<SubjectDTO> updateSubject(@Valid @RequestBody SubjectDTO subjectDTO) throws URISyntaxException {
         log.debug("REST request to update Subject : {}", subjectDTO);
         if (subjectDTO.getId() == null) {
-            return createSubject(subjectDTO);
+            throw new BadRequestAlertException("Invalid id", ENTITY_NAME, "idnull");
         }
+
         Subject subject = subjectMapper.toEntity(subjectDTO);
         subject = subjectRepository.save(subject);
         SubjectDTO result = subjectMapper.toDto(subject);
@@ -98,7 +99,7 @@ public class SubjectResource {
         log.debug("REST request to get all Subjects");
         List<Subject> subjects = subjectRepository.findAll();
         return subjectMapper.toDto(subjects);
-        }
+    }
 
     /**
      * GET  /subjects/:id : get the "id" subject.
@@ -110,9 +111,9 @@ public class SubjectResource {
     @Timed
     public ResponseEntity<SubjectDTO> getSubject(@PathVariable Long id) {
         log.debug("REST request to get Subject : {}", id);
-        Subject subject = subjectRepository.findOne(id);
-        SubjectDTO subjectDTO = subjectMapper.toDto(subject);
-        return ResponseUtil.wrapOrNotFound(Optional.ofNullable(subjectDTO));
+        Optional<SubjectDTO> subjectDTO = subjectRepository.findById(id)
+            .map(subjectMapper::toDto);
+        return ResponseUtil.wrapOrNotFound(subjectDTO);
     }
 
     /**
@@ -125,7 +126,8 @@ public class SubjectResource {
     @Timed
     public ResponseEntity<Void> deleteSubject(@PathVariable Long id) {
         log.debug("REST request to delete Subject : {}", id);
-        subjectRepository.delete(id);
+
+        subjectRepository.deleteById(id);
         return ResponseEntity.ok().headers(HeaderUtil.createEntityDeletionAlert(ENTITY_NAME, id.toString())).build();
     }
 }

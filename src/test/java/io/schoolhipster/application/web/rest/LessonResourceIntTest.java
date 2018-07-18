@@ -33,6 +33,7 @@ import java.time.ZoneOffset;
 import java.time.ZoneId;
 import java.util.List;
 
+
 import static io.schoolhipster.application.web.rest.TestUtil.sameInstant;
 import static io.schoolhipster.application.web.rest.TestUtil.createFormattingConversionService;
 import static org.assertj.core.api.Assertions.assertThat;
@@ -67,8 +68,10 @@ public class LessonResourceIntTest {
     @Autowired
     private LessonRepository lessonRepository;
 
+
     @Autowired
     private LessonMapper lessonMapper;
+    
 
     @Autowired
     private LessonService lessonService;
@@ -124,10 +127,10 @@ public class LessonResourceIntTest {
         em.flush();
         lesson.setSubject(subject);
         // Add required entity
-        Student students = StudentResourceIntTest.createEntity(em);
-        em.persist(students);
+        Student student = StudentResourceIntTest.createEntity(em);
+        em.persist(student);
         em.flush();
-        lesson.getStudents().add(students);
+        lesson.getStudents().add(student);
         return lesson;
     }
 
@@ -272,6 +275,7 @@ public class LessonResourceIntTest {
             .andExpect(jsonPath("$.[*].realEndDate").value(hasItem(sameInstant(DEFAULT_REAL_END_DATE))))
             .andExpect(jsonPath("$.[*].topic").value(hasItem(DEFAULT_TOPIC.toString())));
     }
+    
 
     @Test
     @Transactional
@@ -290,7 +294,6 @@ public class LessonResourceIntTest {
             .andExpect(jsonPath("$.realEndDate").value(sameInstant(DEFAULT_REAL_END_DATE)))
             .andExpect(jsonPath("$.topic").value(DEFAULT_TOPIC.toString()));
     }
-
     @Test
     @Transactional
     public void getNonExistingLesson() throws Exception {
@@ -304,10 +307,11 @@ public class LessonResourceIntTest {
     public void updateLesson() throws Exception {
         // Initialize the database
         lessonRepository.saveAndFlush(lesson);
+
         int databaseSizeBeforeUpdate = lessonRepository.findAll().size();
 
         // Update the lesson
-        Lesson updatedLesson = lessonRepository.findOne(lesson.getId());
+        Lesson updatedLesson = lessonRepository.findById(lesson.getId()).get();
         // Disconnect from session so that the updates on updatedLesson are not directly saved in db
         em.detach(updatedLesson);
         updatedLesson
@@ -346,11 +350,11 @@ public class LessonResourceIntTest {
         restLessonMockMvc.perform(put("/api/lessons")
             .contentType(TestUtil.APPLICATION_JSON_UTF8)
             .content(TestUtil.convertObjectToJsonBytes(lessonDTO)))
-            .andExpect(status().isCreated());
+            .andExpect(status().isBadRequest());
 
         // Validate the Lesson in the database
         List<Lesson> lessonList = lessonRepository.findAll();
-        assertThat(lessonList).hasSize(databaseSizeBeforeUpdate + 1);
+        assertThat(lessonList).hasSize(databaseSizeBeforeUpdate);
     }
 
     @Test
@@ -358,6 +362,7 @@ public class LessonResourceIntTest {
     public void deleteLesson() throws Exception {
         // Initialize the database
         lessonRepository.saveAndFlush(lesson);
+
         int databaseSizeBeforeDelete = lessonRepository.findAll().size();
 
         // Get the lesson

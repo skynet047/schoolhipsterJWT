@@ -1,8 +1,11 @@
 package io.schoolhipster.application.service;
 
 import io.schoolhipster.application.service.dto.LessonDTO;
+
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+
+import java.util.Optional;
 
 /**
  * Service Interface for managing Lesson.
@@ -25,13 +28,14 @@ public interface LessonService {
      */
     Page<LessonDTO> findAll(Pageable pageable);
 
+
     /**
      * Get the "id" lesson.
      *
      * @param id the id of the entity
      * @return the entity
      */
-    LessonDTO findOne(Long id);
+    Optional<LessonDTO> findOne(Long id);
 
     /**
      * Delete the "id" lesson.

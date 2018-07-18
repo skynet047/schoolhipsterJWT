@@ -74,7 +74,7 @@ public class StudentResource {
     public ResponseEntity<StudentDTO> updateStudent(@Valid @RequestBody StudentDTO studentDTO) throws URISyntaxException {
         log.debug("REST request to update Student : {}", studentDTO);
         if (studentDTO.getId() == null) {
-            return createStudent(studentDTO);
+            throw new BadRequestAlertException("Invalid id", ENTITY_NAME, "idnull");
         }
         StudentDTO result = studentService.save(studentDTO);
         return ResponseEntity.ok()
@@ -86,14 +86,20 @@ public class StudentResource {
      * GET  /students : get all the students.
      *
      * @param pageable the pagination information
+     * @param eagerload flag to eager load entities from relationships (This is applicable for many-to-many)
      * @return the ResponseEntity with status 200 (OK) and the list of students in body
      */
     @GetMapping("/students")
     @Timed
-    public ResponseEntity<List<StudentDTO>> getAllStudents(Pageable pageable) {
+    public ResponseEntity<List<StudentDTO>> getAllStudents(Pageable pageable, @RequestParam(required = false, defaultValue = "false") boolean eagerload) {
         log.debug("REST request to get a page of Students");
-        Page<StudentDTO> page = studentService.findAll(pageable);
-        HttpHeaders headers = PaginationUtil.generatePaginationHttpHeaders(page, "/api/students");
+        Page<StudentDTO> page;
+        if (eagerload) {
+            page = studentService.findAllWithEagerRelationships(pageable);
+        } else {
+            page = studentService.findAll(pageable);
+        }
+        HttpHeaders headers = PaginationUtil.generatePaginationHttpHeaders(page, String.format("/api/students?eagerload=%b", eagerload));
         return new ResponseEntity<>(page.getContent(), headers, HttpStatus.OK);
     }
 
@@ -107,8 +113,8 @@ public class StudentResource {
     @Timed
     public ResponseEntity<StudentDTO> getStudent(@PathVariable Long id) {
         log.debug("REST request to get Student : {}", id);
-        StudentDTO studentDTO = studentService.findOne(id);
-        return ResponseUtil.wrapOrNotFound(Optional.ofNullable(studentDTO));
+        Optional<StudentDTO> studentDTO = studentService.findOne(id);
+        return ResponseUtil.wrapOrNotFound(studentDTO);
     }
 
     /**

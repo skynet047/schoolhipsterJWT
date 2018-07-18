@@ -12,9 +12,12 @@ import io.schoolhipster.application.web.rest.errors.ExceptionTranslator;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.data.web.PageableHandlerMethodArgumentResolver;
 import org.springframework.http.MediaType;
 import org.springframework.http.converter.json.MappingJackson2HttpMessageConverter;
@@ -24,11 +27,14 @@ import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.persistence.EntityManager;
+import java.util.ArrayList;
 import java.util.List;
+
 
 import static io.schoolhipster.application.web.rest.TestUtil.createFormattingConversionService;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.hamcrest.Matchers.hasItem;
+import static org.mockito.Mockito.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
@@ -50,14 +56,19 @@ public class StudentResourceIntTest {
     private static final String DEFAULT_PHONE_NUMBER = "AAAAAAAAAA";
     private static final String UPDATED_PHONE_NUMBER = "BBBBBBBBBB";
 
-    private static final String DEFAULT_EMAIL = "T-@Sj.NI";
-    private static final String UPDATED_EMAIL = "tv@-Q.Fxx";
+    private static final String DEFAULT_EMAIL = "B0@Wn.ukImO";
+    private static final String UPDATED_EMAIL = "wi@OJ.NRS";
 
     @Autowired
     private StudentRepository studentRepository;
+    @Mock
+    private StudentRepository studentRepositoryMock;
 
     @Autowired
     private StudentMapper studentMapper;
+
+    @Mock
+    private StudentService studentServiceMock;
 
     @Autowired
     private StudentService studentService;
@@ -187,6 +198,37 @@ public class StudentResourceIntTest {
             .andExpect(jsonPath("$.[*].email").value(hasItem(DEFAULT_EMAIL.toString())));
     }
 
+    public void getAllStudentsWithEagerRelationshipsIsEnabled() throws Exception {
+        StudentResource studentResource = new StudentResource(studentServiceMock);
+        when(studentServiceMock.findAllWithEagerRelationships(any())).thenReturn(new PageImpl(new ArrayList<>()));
+
+        MockMvc restStudentMockMvc = MockMvcBuilders.standaloneSetup(studentResource)
+            .setCustomArgumentResolvers(pageableArgumentResolver)
+            .setControllerAdvice(exceptionTranslator)
+            .setConversionService(createFormattingConversionService())
+            .setMessageConverters(jacksonMessageConverter).build();
+
+        restStudentMockMvc.perform(get("/api/students?eagerload=true"))
+        .andExpect(status().isOk());
+
+        verify(studentServiceMock, times(1)).findAllWithEagerRelationships(any());
+    }
+
+    public void getAllStudentsWithEagerRelationshipsIsNotEnabled() throws Exception {
+        StudentResource studentResource = new StudentResource(studentServiceMock);
+            when(studentServiceMock.findAllWithEagerRelationships(any())).thenReturn(new PageImpl(new ArrayList<>()));
+            MockMvc restStudentMockMvc = MockMvcBuilders.standaloneSetup(studentResource)
+            .setCustomArgumentResolvers(pageableArgumentResolver)
+            .setControllerAdvice(exceptionTranslator)
+            .setConversionService(createFormattingConversionService())
+            .setMessageConverters(jacksonMessageConverter).build();
+
+        restStudentMockMvc.perform(get("/api/students?eagerload=true"))
+        .andExpect(status().isOk());
+
+            verify(studentServiceMock, times(1)).findAllWithEagerRelationships(any());
+    }
+
     @Test
     @Transactional
     public void getStudent() throws Exception {
@@ -203,7 +245,6 @@ public class StudentResourceIntTest {
             .andExpect(jsonPath("$.phoneNumber").value(DEFAULT_PHONE_NUMBER.toString()))
             .andExpect(jsonPath("$.email").value(DEFAULT_EMAIL.toString()));
     }
-
     @Test
     @Transactional
     public void getNonExistingStudent() throws Exception {
@@ -217,10 +258,11 @@ public class StudentResourceIntTest {
     public void updateStudent() throws Exception {
         // Initialize the database
         studentRepository.saveAndFlush(student);
+
         int databaseSizeBeforeUpdate = studentRepository.findAll().size();
 
         // Update the student
-        Student updatedStudent = studentRepository.findOne(student.getId());
+        Student updatedStudent = studentRepository.findById(student.getId()).get();
         // Disconnect from session so that the updates on updatedStudent are not directly saved in db
         em.detach(updatedStudent);
         updatedStudent
@@ -257,11 +299,11 @@ public class StudentResourceIntTest {
         restStudentMockMvc.perform(put("/api/students")
             .contentType(TestUtil.APPLICATION_JSON_UTF8)
             .content(TestUtil.convertObjectToJsonBytes(studentDTO)))
-            .andExpect(status().isCreated());
+            .andExpect(status().isBadRequest());
 
         // Validate the Student in the database
         List<Student> studentList = studentRepository.findAll();
-        assertThat(studentList).hasSize(databaseSizeBeforeUpdate + 1);
+        assertThat(studentList).hasSize(databaseSizeBeforeUpdate);
     }
 
     @Test
@@ -269,6 +311,7 @@ public class StudentResourceIntTest {
     public void deleteStudent() throws Exception {
         // Initialize the database
         studentRepository.saveAndFlush(student);
+
         int databaseSizeBeforeDelete = studentRepository.findAll().size();
 
         // Get the student

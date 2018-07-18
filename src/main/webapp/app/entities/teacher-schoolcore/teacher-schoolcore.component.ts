@@ -1,19 +1,20 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
-import { HttpResponse, HttpErrorResponse } from '@angular/common/http';
-import { Subscription } from 'rxjs/Subscription';
+import { HttpErrorResponse, HttpHeaders, HttpResponse } from '@angular/common/http';
+import { Subscription } from 'rxjs';
 import { JhiEventManager, JhiParseLinks, JhiAlertService } from 'ng-jhipster';
 
-import { TeacherSchoolcore } from './teacher-schoolcore.model';
+import { ITeacherSchoolcore } from 'app/shared/model/teacher-schoolcore.model';
+import { Principal } from 'app/core';
+
+import { ITEMS_PER_PAGE } from 'app/shared';
 import { TeacherSchoolcoreService } from './teacher-schoolcore.service';
-import { ITEMS_PER_PAGE, Principal } from '../../shared';
 
 @Component({
     selector: 'jhi-teacher-schoolcore',
     templateUrl: './teacher-schoolcore.component.html'
 })
 export class TeacherSchoolcoreComponent implements OnInit, OnDestroy {
-
-    teachers: TeacherSchoolcore[];
+    teachers: ITeacherSchoolcore[];
     currentAccount: any;
     eventSubscriber: Subscription;
     itemsPerPage: number;
@@ -42,14 +43,16 @@ export class TeacherSchoolcoreComponent implements OnInit, OnDestroy {
     }
 
     loadAll() {
-        this.teacherService.query({
-            page: this.page,
-            size: this.itemsPerPage,
-            sort: this.sort()
-        }).subscribe(
-            (res: HttpResponse<TeacherSchoolcore[]>) => this.onSuccess(res.body, res.headers),
-            (res: HttpErrorResponse) => this.onError(res.message)
-        );
+        this.teacherService
+            .query({
+                page: this.page,
+                size: this.itemsPerPage,
+                sort: this.sort()
+            })
+            .subscribe(
+                (res: HttpResponse<ITeacherSchoolcore[]>) => this.paginateTeachers(res.body, res.headers),
+                (res: HttpErrorResponse) => this.onError(res.message)
+            );
     }
 
     reset() {
@@ -62,9 +65,10 @@ export class TeacherSchoolcoreComponent implements OnInit, OnDestroy {
         this.page = page;
         this.loadAll();
     }
+
     ngOnInit() {
         this.loadAll();
-        this.principal.identity().then((account) => {
+        this.principal.identity().then(account => {
             this.currentAccount = account;
         });
         this.registerChangeInTeachers();
@@ -74,11 +78,12 @@ export class TeacherSchoolcoreComponent implements OnInit, OnDestroy {
         this.eventManager.destroy(this.eventSubscriber);
     }
 
-    trackId(index: number, item: TeacherSchoolcore) {
+    trackId(index: number, item: ITeacherSchoolcore) {
         return item.id;
     }
+
     registerChangeInTeachers() {
-        this.eventSubscriber = this.eventManager.subscribe('teacherListModification', (response) => this.reset());
+        this.eventSubscriber = this.eventManager.subscribe('teacherListModification', response => this.reset());
     }
 
     sort() {
@@ -89,15 +94,15 @@ export class TeacherSchoolcoreComponent implements OnInit, OnDestroy {
         return result;
     }
 
-    private onSuccess(data, headers) {
+    private paginateTeachers(data: ITeacherSchoolcore[], headers: HttpHeaders) {
         this.links = this.parseLinks.parse(headers.get('link'));
-        this.totalItems = headers.get('X-Total-Count');
+        this.totalItems = parseInt(headers.get('X-Total-Count'), 10);
         for (let i = 0; i < data.length; i++) {
             this.teachers.push(data[i]);
         }
     }
 
-    private onError(error) {
-        this.jhiAlertService.error(error.message, null, null);
+    private onError(errorMessage: string) {
+        this.jhiAlertService.error(errorMessage, null, null);
     }
 }

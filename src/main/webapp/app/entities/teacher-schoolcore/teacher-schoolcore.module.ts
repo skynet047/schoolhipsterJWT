@@ -1,48 +1,33 @@
 import { NgModule, CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 import { RouterModule } from '@angular/router';
 
-import { SchoolhipsterJwtSharedModule } from '../../shared';
+import { SchoolhipsterJwtSharedModule } from 'app/shared';
 import {
-    TeacherSchoolcoreService,
-    TeacherSchoolcorePopupService,
     TeacherSchoolcoreComponent,
     TeacherSchoolcoreDetailComponent,
-    TeacherSchoolcoreDialogComponent,
-    TeacherSchoolcorePopupComponent,
+    TeacherSchoolcoreUpdateComponent,
     TeacherSchoolcoreDeletePopupComponent,
     TeacherSchoolcoreDeleteDialogComponent,
     teacherRoute,
-    teacherPopupRoute,
+    teacherPopupRoute
 } from './';
 
-const ENTITY_STATES = [
-    ...teacherRoute,
-    ...teacherPopupRoute,
-];
+const ENTITY_STATES = [...teacherRoute, ...teacherPopupRoute];
 
 @NgModule({
-    imports: [
-        SchoolhipsterJwtSharedModule,
-        RouterModule.forChild(ENTITY_STATES)
-    ],
+    imports: [SchoolhipsterJwtSharedModule, RouterModule.forChild(ENTITY_STATES)],
     declarations: [
         TeacherSchoolcoreComponent,
         TeacherSchoolcoreDetailComponent,
-        TeacherSchoolcoreDialogComponent,
+        TeacherSchoolcoreUpdateComponent,
         TeacherSchoolcoreDeleteDialogComponent,
-        TeacherSchoolcorePopupComponent,
-        TeacherSchoolcoreDeletePopupComponent,
+        TeacherSchoolcoreDeletePopupComponent
     ],
     entryComponents: [
         TeacherSchoolcoreComponent,
-        TeacherSchoolcoreDialogComponent,
-        TeacherSchoolcorePopupComponent,
+        TeacherSchoolcoreUpdateComponent,
         TeacherSchoolcoreDeleteDialogComponent,
-        TeacherSchoolcoreDeletePopupComponent,
-    ],
-    providers: [
-        TeacherSchoolcoreService,
-        TeacherSchoolcorePopupService,
+        TeacherSchoolcoreDeletePopupComponent
     ],
     schemas: [CUSTOM_ELEMENTS_SCHEMA]
 })

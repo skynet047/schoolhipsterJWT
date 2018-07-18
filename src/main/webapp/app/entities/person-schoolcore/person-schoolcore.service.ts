@@ -1,74 +1,38 @@
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpResponse } from '@angular/common/http';
-import { Observable } from 'rxjs/Observable';
-import { SERVER_API_URL } from '../../app.constants';
+import { Observable } from 'rxjs';
 
-import { PersonSchoolcore } from './person-schoolcore.model';
-import { createRequestOption } from '../../shared';
+import { SERVER_API_URL } from 'app/app.constants';
+import { createRequestOption } from 'app/shared';
+import { IPersonSchoolcore } from 'app/shared/model/person-schoolcore.model';
 
-export type EntityResponseType = HttpResponse<PersonSchoolcore>;
+type EntityResponseType = HttpResponse<IPersonSchoolcore>;
+type EntityArrayResponseType = HttpResponse<IPersonSchoolcore[]>;
 
-@Injectable()
+@Injectable({ providedIn: 'root' })
 export class PersonSchoolcoreService {
+    private resourceUrl = SERVER_API_URL + 'api/people';
 
-    private resourceUrl =  SERVER_API_URL + 'api/people';
+    constructor(private http: HttpClient) {}
 
-    constructor(private http: HttpClient) { }
-
-    create(person: PersonSchoolcore): Observable<EntityResponseType> {
-        const copy = this.convert(person);
-        return this.http.post<PersonSchoolcore>(this.resourceUrl, copy, { observe: 'response' })
-            .map((res: EntityResponseType) => this.convertResponse(res));
+    create(person: IPersonSchoolcore): Observable<EntityResponseType> {
+        return this.http.post<IPersonSchoolcore>(this.resourceUrl, person, { observe: 'response' });
     }
 
-    update(person: PersonSchoolcore): Observable<EntityResponseType> {
-        const copy = this.convert(person);
-        return this.http.put<PersonSchoolcore>(this.resourceUrl, copy, { observe: 'response' })
-            .map((res: EntityResponseType) => this.convertResponse(res));
+    update(person: IPersonSchoolcore): Observable<EntityResponseType> {
+        return this.http.put<IPersonSchoolcore>(this.resourceUrl, person, { observe: 'response' });
     }
 
     find(id: number): Observable<EntityResponseType> {
-        return this.http.get<PersonSchoolcore>(`${this.resourceUrl}/${id}`, { observe: 'response'})
-            .map((res: EntityResponseType) => this.convertResponse(res));
+        return this.http.get<IPersonSchoolcore>(`${this.resourceUrl}/${id}`, { observe: 'response' });
     }
 
-    query(req?: any): Observable<HttpResponse<PersonSchoolcore[]>> {
+    query(req?: any): Observable<EntityArrayResponseType> {
         const options = createRequestOption(req);
-        return this.http.get<PersonSchoolcore[]>(this.resourceUrl, { params: options, observe: 'response' })
-            .map((res: HttpResponse<PersonSchoolcore[]>) => this.convertArrayResponse(res));
+        return this.http.get<IPersonSchoolcore[]>(this.resourceUrl, { params: options, observe: 'response' });
     }
 
     delete(id: number): Observable<HttpResponse<any>> {
-        return this.http.delete<any>(`${this.resourceUrl}/${id}`, { observe: 'response'});
-    }
-
-    private convertResponse(res: EntityResponseType): EntityResponseType {
-        const body: PersonSchoolcore = this.convertItemFromServer(res.body);
-        return res.clone({body});
-    }
-
-    private convertArrayResponse(res: HttpResponse<PersonSchoolcore[]>): HttpResponse<PersonSchoolcore[]> {
-        const jsonResponse: PersonSchoolcore[] = res.body;
-        const body: PersonSchoolcore[] = [];
-        for (let i = 0; i < jsonResponse.length; i++) {
-            body.push(this.convertItemFromServer(jsonResponse[i]));
-        }
-        return res.clone({body});
-    }
-
-    /**
-     * Convert a returned JSON object to PersonSchoolcore.
-     */
-    private convertItemFromServer(person: PersonSchoolcore): PersonSchoolcore {
-        const copy: PersonSchoolcore = Object.assign({}, person);
-        return copy;
-    }
-
-    /**
-     * Convert a PersonSchoolcore to a JSON which can be sent to the server.
-     */
-    private convert(person: PersonSchoolcore): PersonSchoolcore {
-        const copy: PersonSchoolcore = Object.assign({}, person);
-        return copy;
+        return this.http.delete<any>(`${this.resourceUrl}/${id}`, { observe: 'response' });
     }
 }

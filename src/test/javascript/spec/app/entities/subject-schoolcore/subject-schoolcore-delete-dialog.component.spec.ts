@@ -1,15 +1,14 @@
 /* tslint:disable max-line-length */
-import { ComponentFixture, TestBed, async, inject, fakeAsync, tick } from '@angular/core/testing';
+import { ComponentFixture, TestBed, inject, fakeAsync, tick } from '@angular/core/testing';
 import { NgbActiveModal } from '@ng-bootstrap/ng-bootstrap';
-import { Observable } from 'rxjs/Observable';
+import { Observable, of } from 'rxjs';
 import { JhiEventManager } from 'ng-jhipster';
 
 import { SchoolhipsterJwtTestModule } from '../../../test.module';
-import { SubjectSchoolcoreDeleteDialogComponent } from '../../../../../../main/webapp/app/entities/subject-schoolcore/subject-schoolcore-delete-dialog.component';
-import { SubjectSchoolcoreService } from '../../../../../../main/webapp/app/entities/subject-schoolcore/subject-schoolcore.service';
+import { SubjectSchoolcoreDeleteDialogComponent } from 'app/entities/subject-schoolcore/subject-schoolcore-delete-dialog.component';
+import { SubjectSchoolcoreService } from 'app/entities/subject-schoolcore/subject-schoolcore.service';
 
 describe('Component Tests', () => {
-
     describe('SubjectSchoolcore Management Delete Component', () => {
         let comp: SubjectSchoolcoreDeleteDialogComponent;
         let fixture: ComponentFixture<SubjectSchoolcoreDeleteDialogComponent>;
@@ -17,19 +16,13 @@ describe('Component Tests', () => {
         let mockEventManager: any;
         let mockActiveModal: any;
 
-        beforeEach(async(() => {
+        beforeEach(() => {
             TestBed.configureTestingModule({
                 imports: [SchoolhipsterJwtTestModule],
-                declarations: [SubjectSchoolcoreDeleteDialogComponent],
-                providers: [
-                    SubjectSchoolcoreService
-                ]
+                declarations: [SubjectSchoolcoreDeleteDialogComponent]
             })
-            .overrideTemplate(SubjectSchoolcoreDeleteDialogComponent, '')
-            .compileComponents();
-        }));
-
-        beforeEach(() => {
+                .overrideTemplate(SubjectSchoolcoreDeleteDialogComponent, '')
+                .compileComponents();
             fixture = TestBed.createComponent(SubjectSchoolcoreDeleteDialogComponent);
             comp = fixture.componentInstance;
             service = fixture.debugElement.injector.get(SubjectSchoolcoreService);
@@ -38,11 +31,13 @@ describe('Component Tests', () => {
         });
 
         describe('confirmDelete', () => {
-            it('Should call delete service on confirmDelete',
-                inject([],
+            it(
+                'Should call delete service on confirmDelete',
+                inject(
+                    [],
                     fakeAsync(() => {
                         // GIVEN
-                        spyOn(service, 'delete').and.returnValue(Observable.of({}));
+                        spyOn(service, 'delete').and.returnValue(of({}));
 
                         // WHEN
                         comp.confirmDelete(123);
@@ -57,5 +52,4 @@ describe('Component Tests', () => {
             );
         });
     });
-
 });

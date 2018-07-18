@@ -1,32 +1,30 @@
 <div>
-    <h2>
+    <h2 id="page-heading">
         <span jhiTranslate="schoolhipsterJwtApp.student.home.title">Students</span>
-        <button class="btn btn-primary float-right jh-create-entity create-student-schoolcore" [routerLink]="['/', { outlets: { popup: ['student-schoolcore-new'] } }]">
-            <span class="fa fa-plus"></span>
+        <button id="jh-create-entity" class="btn btn-primary float-right jh-create-entity create-student-schoolcore" [routerLink]="['/student-schoolcore/new']">
+            <fa-icon [icon]="'plus'"></fa-icon>
             <span  jhiTranslate="schoolhipsterJwtApp.student.home.createLabel">
             Create new Student
             </span>
         </button>
     </h2>
     <jhi-alert></jhi-alert>
-    <div class="row">
-    </div>
     <br/>
     <div class="table-responsive" *ngIf="students">
         <table class="table table-striped">
             <thead>
             <tr jhiSort [(predicate)]="predicate" [(ascending)]="reverse" [callback]="reset.bind(this)">
-            <th jhiSortBy="id"><span jhiTranslate="global.field.id">ID</span> <span class="fa fa-sort"></span></th>
-            <th jhiSortBy="firstName"><span jhiTranslate="schoolhipsterJwtApp.student.firstName">First Name</span> <span class="fa fa-sort"></span></th>
-            <th jhiSortBy="lastName"><span jhiTranslate="schoolhipsterJwtApp.student.lastName">Last Name</span> <span class="fa fa-sort"></span></th>
-            <th jhiSortBy="phoneNumber"><span jhiTranslate="schoolhipsterJwtApp.student.phoneNumber">Phone Number</span> <span class="fa fa-sort"></span></th>
-            <th jhiSortBy="email"><span jhiTranslate="schoolhipsterJwtApp.student.email">Email</span> <span class="fa fa-sort"></span></th>
+            <th jhiSortBy="id"><span jhiTranslate="global.field.id">ID</span> <fa-icon [icon]="'sort'"></fa-icon></th>
+            <th jhiSortBy="firstName"><span jhiTranslate="schoolhipsterJwtApp.student.firstName">First Name</span> <fa-icon [icon]="'sort'"></fa-icon></th>
+            <th jhiSortBy="lastName"><span jhiTranslate="schoolhipsterJwtApp.student.lastName">Last Name</span> <fa-icon [icon]="'sort'"></fa-icon></th>
+            <th jhiSortBy="phoneNumber"><span jhiTranslate="schoolhipsterJwtApp.student.phoneNumber">Phone Number</span> <fa-icon [icon]="'sort'"></fa-icon></th>
+            <th jhiSortBy="email"><span jhiTranslate="schoolhipsterJwtApp.student.email">Email</span> <fa-icon [icon]="'sort'"></fa-icon></th>
             <th></th>
             </tr>
             </thead>
             <tbody infinite-scroll (scrolled)="loadPage(page + 1)" [infiniteScrollDisabled]="page >= links['last']" [infiniteScrollDistance]="0">
             <tr *ngFor="let student of students ;trackBy: trackId">
-                <td><a [routerLink]="['../student-schoolcore', student.id ]">{{student.id}}</a></td>
+                <td><a [routerLink]="['/student-schoolcore', student.id, 'view' ]">{{student.id}}</a></td>
                 <td>{{student.firstName}}</td>
                 <td>{{student.lastName}}</td>
                 <td>{{student.phoneNumber}}</td>
@@ -34,17 +32,15 @@
                 <td class="text-right">
                     <div class="btn-group flex-btn-group-container">
                         <button type="submit"
-                                [routerLink]="['../student-schoolcore', student.id ]"
+                                [routerLink]="['/student-schoolcore', student.id, 'view' ]"
                                 class="btn btn-info btn-sm">
-                            <span class="fa fa-eye"></span>
+                            <fa-icon [icon]="'eye'"></fa-icon>
                             <span class="d-none d-md-inline" jhiTranslate="entity.action.view">View</span>
                         </button>
                         <button type="submit"
-                                [routerLink]="['/', { outlets: { popup: 'student-schoolcore/'+ student.id + '/edit'} }]"
-                                replaceUrl="true"
-                                queryParamsHandling="merge"
+                                [routerLink]="['/student-schoolcore', student.id, 'edit']"
                                 class="btn btn-primary btn-sm">
-                            <span class="fa fa-pencil"></span>
+                            <fa-icon [icon]="'pencil-alt'"></fa-icon>
                             <span class="d-none d-md-inline" jhiTranslate="entity.action.edit">Edit</span>
                         </button>
                         <button type="submit"
@@ -52,7 +48,7 @@
                                 replaceUrl="true"
                                 queryParamsHandling="merge"
                                 class="btn btn-danger btn-sm">
-                            <span class="fa fa-remove"></span>
+                            <fa-icon [icon]="'times'"></fa-icon>
                             <span class="d-none d-md-inline" jhiTranslate="entity.action.delete">Delete</span>
                         </button>
                     </div>

@@ -22,19 +22,19 @@
             <column name="id" type="bigint" autoIncrement="${autoIncrement}">
                 <constraints primaryKey="true" nullable="false"/>
             </column>
-            <column name="planned_start_time" type="timestamp">
+            <column name="planned_start_time" type="datetime">
                 <constraints nullable="false" />
             </column>
 
-            <column name="planned_end_time" type="timestamp">
+            <column name="planned_end_time" type="datetime">
                 <constraints nullable="false" />
             </column>
 
-            <column name="real_start_date" type="timestamp">
+            <column name="real_start_date" type="datetime">
                 <constraints nullable="false" />
             </column>
 
-            <column name="real_end_date" type="timestamp">
+            <column name="real_end_date" type="datetime">
                 <constraints nullable="false" />
             </column>
 

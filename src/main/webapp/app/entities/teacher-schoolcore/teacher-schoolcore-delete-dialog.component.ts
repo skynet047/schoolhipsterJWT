@@ -1,11 +1,10 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
-import { ActivatedRoute } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 
-import { NgbActiveModal } from '@ng-bootstrap/ng-bootstrap';
+import { NgbActiveModal, NgbModal, NgbModalRef } from '@ng-bootstrap/ng-bootstrap';
 import { JhiEventManager } from 'ng-jhipster';
 
-import { TeacherSchoolcore } from './teacher-schoolcore.model';
-import { TeacherSchoolcorePopupService } from './teacher-schoolcore-popup.service';
+import { ITeacherSchoolcore } from 'app/shared/model/teacher-schoolcore.model';
 import { TeacherSchoolcoreService } from './teacher-schoolcore.service';
 
 @Component({
@@ -13,22 +12,20 @@ import { TeacherSchoolcoreService } from './teacher-schoolcore.service';
     templateUrl: './teacher-schoolcore-delete-dialog.component.html'
 })
 export class TeacherSchoolcoreDeleteDialogComponent {
-
-    teacher: TeacherSchoolcore;
+    teacher: ITeacherSchoolcore;
 
     constructor(
         private teacherService: TeacherSchoolcoreService,
         public activeModal: NgbActiveModal,
         private eventManager: JhiEventManager
-    ) {
-    }
+    ) {}
 
     clear() {
         this.activeModal.dismiss('cancel');
     }
 
     confirmDelete(id: number) {
-        this.teacherService.delete(id).subscribe((response) => {
+        this.teacherService.delete(id).subscribe(response => {
             this.eventManager.broadcast({
                 name: 'teacherListModification',
                 content: 'Deleted an teacher'
@@ -43,22 +40,33 @@ export class TeacherSchoolcoreDeleteDialogComponent {
     template: ''
 })
 export class TeacherSchoolcoreDeletePopupComponent implements OnInit, OnDestroy {
+    private ngbModalRef: NgbModalRef;
 
-    routeSub: any;
-
-    constructor(
-        private route: ActivatedRoute,
-        private teacherPopupService: TeacherSchoolcorePopupService
-    ) {}
+    constructor(private activatedRoute: ActivatedRoute, private router: Router, private modalService: NgbModal) {}
 
     ngOnInit() {
-        this.routeSub = this.route.params.subscribe((params) => {
-            this.teacherPopupService
-                .open(TeacherSchoolcoreDeleteDialogComponent as Component, params['id']);
+        this.activatedRoute.data.subscribe(({ teacher }) => {
+            setTimeout(() => {
+                this.ngbModalRef = this.modalService.open(TeacherSchoolcoreDeleteDialogComponent as Component, {
+                    size: 'lg',
+                    backdrop: 'static'
+                });
+                this.ngbModalRef.componentInstance.teacher = teacher;
+                this.ngbModalRef.result.then(
+                    result => {
+                        this.router.navigate([{ outlets: { popup: null } }], { replaceUrl: true, queryParamsHandling: 'merge' });
+                        this.ngbModalRef = null;
+                    },
+                    reason => {
+                        this.router.navigate([{ outlets: { popup: null } }], { replaceUrl: true, queryParamsHandling: 'merge' });
+                        this.ngbModalRef = null;
+                    }
+                );
+            }, 0);
         });
     }
 
     ngOnDestroy() {
-        this.routeSub.unsubscribe();
+        this.ngbModalRef = null;
     }
 }

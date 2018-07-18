@@ -1,54 +1,55 @@
+<div class="row justify-content-center">
+    <div class="col-8">
+        <div *ngIf="lesson">
+            <h2><span jhiTranslate="schoolhipsterJwtApp.lesson.detail.title">Lesson</span> {{lesson.id}}</h2>
+            <hr>
+            <jhi-alert-error></jhi-alert-error>
+            <dl class="row-md jh-entity-details">
+                <dt><span jhiTranslate="schoolhipsterJwtApp.lesson.plannedStartTime">Planned Start Time</span></dt>
+                <dd>
+                    <span>{{lesson.plannedStartTime}}</span>
+                </dd>
+                <dt><span jhiTranslate="schoolhipsterJwtApp.lesson.plannedEndTime">Planned End Time</span></dt>
+                <dd>
+                    <span>{{lesson.plannedEndTime}}</span>
+                </dd>
+                <dt><span jhiTranslate="schoolhipsterJwtApp.lesson.realStartDate">Real Start Date</span></dt>
+                <dd>
+                    <span>{{lesson.realStartDate}}</span>
+                </dd>
+                <dt><span jhiTranslate="schoolhipsterJwtApp.lesson.realEndDate">Real End Date</span></dt>
+                <dd>
+                    <span>{{lesson.realEndDate}}</span>
+                </dd>
+                <dt><span jhiTranslate="schoolhipsterJwtApp.lesson.topic">Topic</span></dt>
+                <dd>
+                    <span>{{lesson.topic}}</span>
+                </dd>
+                <dt><span jhiTranslate="schoolhipsterJwtApp.lesson.teacher">Teacher</span></dt>
+                <dd>
+                    <div *ngIf="lesson.teacherId">
+                        <a [routerLink]="['/teacher-schoolcore', lesson.teacherId, 'view']">{{lesson.teacherId}}</a>
+                    </div>
+                </dd>
+                <dt><span jhiTranslate="schoolhipsterJwtApp.lesson.subject">Subject</span></dt>
+                <dd>
+                    <div *ngIf="lesson.subjectId">
+                        <a [routerLink]="['/subject-schoolcore', lesson.subjectId, 'view']">{{lesson.subjectId}}</a>
+                    </div>
+                </dd>
+            </dl>
 
-<div *ngIf="lesson">
-    <h2><span jhiTranslate="schoolhipsterJwtApp.lesson.detail.title">Lesson</span> {{lesson.id}}</h2>
-    <hr>
-    <jhi-alert-error></jhi-alert-error>
-    <dl class="row-md jh-entity-details">
-        <dt><span jhiTranslate="schoolhipsterJwtApp.lesson.plannedStartTime">Planned Start Time</span></dt>
-        <dd>
-            <span>{{lesson.plannedStartTime | date:'medium'}}</span>
-        </dd>
-        <dt><span jhiTranslate="schoolhipsterJwtApp.lesson.plannedEndTime">Planned End Time</span></dt>
-        <dd>
-            <span>{{lesson.plannedEndTime | date:'medium'}}</span>
-        </dd>
-        <dt><span jhiTranslate="schoolhipsterJwtApp.lesson.realStartDate">Real Start Date</span></dt>
-        <dd>
-            <span>{{lesson.realStartDate | date:'medium'}}</span>
-        </dd>
-        <dt><span jhiTranslate="schoolhipsterJwtApp.lesson.realEndDate">Real End Date</span></dt>
-        <dd>
-            <span>{{lesson.realEndDate | date:'medium'}}</span>
-        </dd>
-        <dt><span jhiTranslate="schoolhipsterJwtApp.lesson.topic">Topic</span></dt>
-        <dd>
-            <span>{{lesson.topic}}</span>
-        </dd>
-        <dt><span jhiTranslate="schoolhipsterJwtApp.lesson.teacher">Teacher</span></dt>
-        <dd>
-            <div *ngIf="lesson.teacherId">
-                <a [routerLink]="['/teacher-schoolcore', lesson.teacherId]">{{lesson.teacherId}}</a>
-            </div>
-        </dd>
-        <dt><span jhiTranslate="schoolhipsterJwtApp.lesson.subject">Subject</span></dt>
-        <dd>
-            <div *ngIf="lesson.subjectId">
-                <a [routerLink]="['/subject-schoolcore', lesson.subjectId]">{{lesson.subjectId}}</a>
-            </div>
-        </dd>
-    </dl>
+            <button type="submit"
+                    (click)="previousState()"
+                    class="btn btn-info">
+                <fa-icon [icon]="'arrow-left'"></fa-icon>&nbsp;<span jhiTranslate="entity.action.back"> Back</span>
+            </button>
 
-    <button type="submit"
-            (click)="previousState()"
-            class="btn btn-info">
-        <span class="fa fa-arrow-left"></span>&nbsp;<span jhiTranslate="entity.action.back"> Back</span>
-    </button>
-
-    <button type="button"
-            [routerLink]="['/', { outlets: { popup: 'lesson-schoolcore/'+ lesson.id + '/edit'} }]"
-            replaceUrl="true"
-            queryParamsHandling="merge"
-            class="btn btn-primary">
-        <span class="fa fa-pencil"></span>&nbsp;<span jhiTranslate="entity.action.edit"> Edit</span>
-    </button>
+            <button type="button"
+                    [routerLink]="['/lesson-schoolcore', lesson.id, 'edit']"
+                    class="btn btn-primary">
+                <fa-icon [icon]="'pencil-alt'"></fa-icon>&nbsp;<span jhiTranslate="entity.action.edit"> Edit</span>
+            </button>
+        </div>
+    </div>
 </div>

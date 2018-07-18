@@ -7,12 +7,14 @@ import io.schoolhipster.application.service.dto.StudentDTO;
 import io.schoolhipster.application.service.mapper.StudentMapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 
+import java.util.Optional;
 /**
  * Service Implementation for managing Student.
  */
@@ -60,6 +62,16 @@ public class StudentServiceImpl implements StudentService {
     }
 
     /**
+     * Get all the Student with eager load of many-to-many relationships.
+     *
+     * @return the list of entities
+     */
+    public Page<StudentDTO> findAllWithEagerRelationships(Pageable pageable) {
+        return studentRepository.findAllWithEagerRelationships(pageable).map(studentMapper::toDto);
+    }
+    
+
+    /**
      * Get one student by id.
      *
      * @param id the id of the entity
@@ -67,10 +79,10 @@ public class StudentServiceImpl implements StudentService {
      */
     @Override
     @Transactional(readOnly = true)
-    public StudentDTO findOne(Long id) {
+    public Optional<StudentDTO> findOne(Long id) {
         log.debug("Request to get Student : {}", id);
-        Student student = studentRepository.findOneWithEagerRelationships(id);
-        return studentMapper.toDto(student);
+        return studentRepository.findOneWithEagerRelationships(id)
+            .map(studentMapper::toDto);
     }
 
     /**
@@ -81,6 +93,6 @@ public class StudentServiceImpl implements StudentService {
     @Override
     public void delete(Long id) {
         log.debug("Request to delete Student : {}", id);
-        studentRepository.delete(id);
+        studentRepository.deleteById(id);
     }
 }

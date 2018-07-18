@@ -26,6 +26,7 @@ import org.springframework.transaction.annotation.Transactional;
 import javax.persistence.EntityManager;
 import java.util.List;
 
+
 import static io.schoolhipster.application.web.rest.TestUtil.createFormattingConversionService;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.hamcrest.Matchers.hasItem;
@@ -54,11 +55,13 @@ public class PersonResourceIntTest {
     private static final String DEFAULT_PHONE_NUMBER = "AAAAAAAAAA";
     private static final String UPDATED_PHONE_NUMBER = "BBBBBBBBBB";
 
-    private static final String DEFAULT_EMAIL = "2-@HI.axHRKH";
-    private static final String UPDATED_EMAIL = "6@W.DNbxNl";
+    private static final String DEFAULT_EMAIL = "-@L.iuE";
+    private static final String UPDATED_EMAIL = "G@qo.uronuO";
 
     @Autowired
     private PersonRepository personRepository;
+
+
 
     @Autowired
     private PersonService personService;
@@ -208,6 +211,7 @@ public class PersonResourceIntTest {
             .andExpect(jsonPath("$.[*].phoneNumber").value(hasItem(DEFAULT_PHONE_NUMBER.toString())))
             .andExpect(jsonPath("$.[*].email").value(hasItem(DEFAULT_EMAIL.toString())));
     }
+
 
     @Test
     @Transactional
@@ -447,7 +451,6 @@ public class PersonResourceIntTest {
             .andExpect(jsonPath("$").isEmpty());
     }
 
-
     @Test
     @Transactional
     public void getNonExistingPerson() throws Exception {
@@ -465,7 +468,7 @@ public class PersonResourceIntTest {
         int databaseSizeBeforeUpdate = personRepository.findAll().size();
 
         // Update the person
-        Person updatedPerson = personRepository.findOne(person.getId());
+        Person updatedPerson = personRepository.findById(person.getId()).get();
         // Disconnect from session so that the updates on updatedPerson are not directly saved in db
         em.detach(updatedPerson);
         updatedPerson
@@ -502,11 +505,11 @@ public class PersonResourceIntTest {
         restPersonMockMvc.perform(put("/api/people")
             .contentType(TestUtil.APPLICATION_JSON_UTF8)
             .content(TestUtil.convertObjectToJsonBytes(person)))
-            .andExpect(status().isCreated());
+            .andExpect(status().isBadRequest());
 
         // Validate the Person in the database
         List<Person> personList = personRepository.findAll();
-        assertThat(personList).hasSize(databaseSizeBeforeUpdate + 1);
+        assertThat(personList).hasSize(databaseSizeBeforeUpdate);
     }
 
     @Test
