@@ -62,6 +62,5 @@ paginate Lesson with pagination
 dto * with mapstruct except Person, Gender
 
 // Set service options to all except few
-service all with serviceImpl except Subject, Person
-// Set an angular suffix
-angularSuffix * with schoolcore
+service all with serviceImpl except Subject
+filter Person, Teacher
