@@ -148,4 +148,12 @@ public class ExceptionTranslatorIntTest {
             .andExpect(jsonPath("$.title").value("Internal Server Error"));
     }
 
+
+    @Test
+    public void testNoSuchElementException() throws Exception {
+        mockMvc.perform(get("/test/no-such-element-exception"))
+            .andExpect(status().is4xxClientError())
+            .andExpect(content().contentType(MediaTypes.PROBLEM))
+            .andExpect(jsonPath("$.message").value("https://www.jhipster.tech/problem/entity-not-found"));
+    }
 }

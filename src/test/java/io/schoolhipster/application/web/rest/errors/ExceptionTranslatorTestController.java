@@ -12,6 +12,7 @@ import javax.validation.Valid;
 import javax.validation.constraints.NotNull;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.NoSuchElementException;
 
 @RestController
 public class ExceptionTranslatorTestController {
@@ -66,6 +67,11 @@ public class ExceptionTranslatorTestController {
     @GetMapping("/test/internal-server-error")
     public void internalServerError() {
         throw new RuntimeException();
+    }
+
+    @GetMapping("/test/no-such-element-exception")
+    public void noSuchElementException() {
+        throw new NoSuchElementException();
     }
 
     public static class TestDTO {
