@@ -1,20 +1,20 @@
 import { NgModule, CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 
-import { SchoolhipsterJwtPersonSchoolcoreModule } from './person-schoolcore/person-schoolcore.module';
-import { SchoolhipsterJwtTeacherSchoolcoreModule } from './teacher-schoolcore/teacher-schoolcore.module';
-import { SchoolhipsterJwtStudentSchoolcoreModule } from './student-schoolcore/student-schoolcore.module';
-import { SchoolhipsterJwtSubjectSchoolcoreModule } from './subject-schoolcore/subject-schoolcore.module';
-import { SchoolhipsterJwtLessonSchoolcoreModule } from './lesson-schoolcore/lesson-schoolcore.module';
+import { SchoolhipsterJwtPersonModule } from './person/person.module';
+import { SchoolhipsterJwtTeacherModule } from './teacher/teacher.module';
+import { SchoolhipsterJwtStudentModule } from './student/student.module';
+import { SchoolhipsterJwtSubjectModule } from './subject/subject.module';
+import { SchoolhipsterJwtLessonModule } from './lesson/lesson.module';
 /* jhipster-needle-add-entity-module-import - JHipster will add entity modules imports here */
 
 @NgModule({
     // prettier-ignore
     imports: [
-        SchoolhipsterJwtPersonSchoolcoreModule,
-        SchoolhipsterJwtTeacherSchoolcoreModule,
-        SchoolhipsterJwtStudentSchoolcoreModule,
-        SchoolhipsterJwtSubjectSchoolcoreModule,
-        SchoolhipsterJwtLessonSchoolcoreModule,
+        SchoolhipsterJwtPersonModule,
+        SchoolhipsterJwtTeacherModule,
+        SchoolhipsterJwtStudentModule,
+        SchoolhipsterJwtSubjectModule,
+        SchoolhipsterJwtLessonModule,
         /* jhipster-needle-add-entity-module - JHipster will add entity modules here */
     ],
     declarations: [],

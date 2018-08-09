@@ -1,5 +1,14 @@
 {
-    "fluentMethods": true,
+    "name": "Subject",
+    "fields": [
+        {
+            "fieldName": "name",
+            "fieldType": "String",
+            "fieldValidateRules": [
+                "required"
+            ]
+        }
+    ],
     "relationships": [
         {
             "relationshipType": "one-to-many",
@@ -15,20 +24,13 @@
             "otherEntityRelationshipName": "subjects"
         }
     ],
-    "fields": [
-        {
-            "fieldName": "name",
-            "fieldType": "String",
-            "fieldValidateRules": [
-                "required"
-            ]
-        }
-    ],
     "changelogDate": "20180601174819",
     "entityTableName": "subject",
     "dto": "mapstruct",
     "pagination": "no",
     "service": "no",
     "jpaMetamodelFiltering": false,
-    "angularJSSuffix": "schoolcore"
+    "fluentMethods": true,
+    "clientRootFolder": "",
+    "applications": "*"
 }

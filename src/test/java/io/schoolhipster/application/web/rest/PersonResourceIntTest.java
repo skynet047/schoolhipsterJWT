@@ -61,7 +61,7 @@ public class PersonResourceIntTest {
     @Autowired
     private PersonRepository personRepository;
 
-
+    
 
     @Autowired
     private PersonService personService;
@@ -211,7 +211,7 @@ public class PersonResourceIntTest {
             .andExpect(jsonPath("$.[*].phoneNumber").value(hasItem(DEFAULT_PHONE_NUMBER.toString())))
             .andExpect(jsonPath("$.[*].email").value(hasItem(DEFAULT_EMAIL.toString())));
     }
-
+    
 
     @Test
     @Transactional

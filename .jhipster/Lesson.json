@@ -1,29 +1,5 @@
 {
-    "fluentMethods": true,
-    "relationships": [
-        {
-            "relationshipType": "many-to-one",
-            "relationshipValidateRules": "required",
-            "relationshipName": "teacher",
-            "otherEntityName": "teacher",
-            "otherEntityField": "id"
-        },
-        {
-            "relationshipType": "many-to-one",
-            "relationshipValidateRules": "required",
-            "relationshipName": "subject",
-            "otherEntityName": "subject",
-            "otherEntityField": "id"
-        },
-        {
-            "relationshipType": "many-to-many",
-            "relationshipValidateRules": "required",
-            "relationshipName": "students",
-            "otherEntityName": "student",
-            "ownerSide": false,
-            "otherEntityRelationshipName": "lessons"
-        }
-    ],
+    "name": "Lesson",
     "fields": [
         {
             "fieldName": "plannedStartTime",
@@ -58,11 +34,37 @@
             "fieldType": "String"
         }
     ],
+    "relationships": [
+        {
+            "relationshipType": "many-to-one",
+            "relationshipValidateRules": "required",
+            "relationshipName": "teacher",
+            "otherEntityName": "teacher",
+            "otherEntityField": "id"
+        },
+        {
+            "relationshipType": "many-to-one",
+            "relationshipValidateRules": "required",
+            "relationshipName": "subject",
+            "otherEntityName": "subject",
+            "otherEntityField": "id"
+        },
+        {
+            "relationshipType": "many-to-many",
+            "relationshipValidateRules": "required",
+            "relationshipName": "students",
+            "otherEntityName": "student",
+            "ownerSide": false,
+            "otherEntityRelationshipName": "lessons"
+        }
+    ],
     "changelogDate": "20180601174820",
     "entityTableName": "lesson",
     "dto": "mapstruct",
     "pagination": "pagination",
     "service": "serviceImpl",
     "jpaMetamodelFiltering": false,
-    "angularJSSuffix": "schoolcore"
+    "fluentMethods": true,
+    "clientRootFolder": "",
+    "applications": "*"
 }

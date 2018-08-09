@@ -7,11 +7,11 @@
             "jhipster-needle-menu-add-element": "JHipster will add additional menu entries here (do not translate!)",
             "entities": {
                 "main": "Encje",
-                "personSchoolcore": "Person",
-                "teacherSchoolcore": "Teacher",
-                "studentSchoolcore": "Student",
-                "subjectSchoolcore": "Subject",
-                "lessonSchoolcore": "Lesson",
+                "person": "Person",
+                "teacher": "Teacher",
+                "student": "Student",
+                "subject": "Subject",
+                "lesson": "Lesson",
                 "jhipster-needle-menu-add-entry": "JHipster will add additional entities here (do not translate!)"
             },
             "account": {

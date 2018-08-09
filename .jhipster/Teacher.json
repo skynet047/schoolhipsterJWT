@@ -1,22 +1,5 @@
 {
-    "fluentMethods": true,
-    "relationships": [
-        {
-            "relationshipType": "many-to-many",
-            "relationshipValidateRules": "required",
-            "otherEntityRelationshipName": "teachers",
-            "relationshipName": "subjects",
-            "otherEntityName": "subject",
-            "otherEntityField": "name",
-            "ownerSide": true
-        },
-        {
-            "relationshipType": "one-to-many",
-            "relationshipName": "lessons",
-            "otherEntityName": "lesson",
-            "otherEntityRelationshipName": "teacher"
-        }
-    ],
+    "name": "Teacher",
     "fields": [
         {
             "fieldName": "firstName",
@@ -71,11 +54,30 @@
             "fieldType": "Integer"
         }
     ],
+    "relationships": [
+        {
+            "relationshipType": "many-to-many",
+            "relationshipValidateRules": "required",
+            "otherEntityRelationshipName": "teachers",
+            "relationshipName": "subjects",
+            "otherEntityName": "subject",
+            "otherEntityField": "name",
+            "ownerSide": true
+        },
+        {
+            "relationshipType": "one-to-many",
+            "relationshipName": "lessons",
+            "otherEntityName": "lesson",
+            "otherEntityRelationshipName": "teacher"
+        }
+    ],
     "changelogDate": "20180601174817",
     "entityTableName": "teacher",
     "dto": "mapstruct",
     "pagination": "infinite-scroll",
     "service": "serviceImpl",
     "jpaMetamodelFiltering": true,
-    "angularJSSuffix": "schoolcore"
+    "fluentMethods": true,
+    "clientRootFolder": "",
+    "applications": "*"
 }

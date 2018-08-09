@@ -1,15 +1,5 @@
 {
-    "fluentMethods": true,
-    "relationships": [
-        {
-            "relationshipType": "many-to-many",
-            "otherEntityRelationshipName": "students",
-            "relationshipName": "lessons",
-            "otherEntityName": "lesson",
-            "otherEntityField": "id",
-            "ownerSide": true
-        }
-    ],
+    "name": "Student",
     "fields": [
         {
             "fieldName": "firstName",
@@ -51,11 +41,23 @@
             "fieldValidateRulesPattern": "^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\\.[a-zA-Z]{2,6}$"
         }
     ],
+    "relationships": [
+        {
+            "relationshipType": "many-to-many",
+            "otherEntityRelationshipName": "students",
+            "relationshipName": "lessons",
+            "otherEntityName": "lesson",
+            "otherEntityField": "id",
+            "ownerSide": true
+        }
+    ],
     "changelogDate": "20180601174818",
     "entityTableName": "student",
     "dto": "mapstruct",
     "pagination": "infinite-scroll",
     "service": "serviceImpl",
     "jpaMetamodelFiltering": false,
-    "angularJSSuffix": "schoolcore"
+    "fluentMethods": true,
+    "clientRootFolder": "",
+    "applications": "*"
 }

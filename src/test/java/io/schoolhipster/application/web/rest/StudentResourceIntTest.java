@@ -66,7 +66,7 @@ public class StudentResourceIntTest {
 
     @Autowired
     private StudentMapper studentMapper;
-
+    
     @Mock
     private StudentService studentServiceMock;
 
@@ -197,7 +197,7 @@ public class StudentResourceIntTest {
             .andExpect(jsonPath("$.[*].phoneNumber").value(hasItem(DEFAULT_PHONE_NUMBER.toString())))
             .andExpect(jsonPath("$.[*].email").value(hasItem(DEFAULT_EMAIL.toString())));
     }
-
+    
     public void getAllStudentsWithEagerRelationshipsIsEnabled() throws Exception {
         StudentResource studentResource = new StudentResource(studentServiceMock);
         when(studentServiceMock.findAllWithEagerRelationships(any())).thenReturn(new PageImpl(new ArrayList<>()));

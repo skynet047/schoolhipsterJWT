@@ -1,6 +1,5 @@
 {
-    "fluentMethods": true,
-    "relationships": [],
+    "name": "Person",
     "fields": [
         {
             "fieldName": "firstName",
@@ -48,11 +47,14 @@
             "fieldValidateRulesPattern": "^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\\.[a-zA-Z]{2,6}$"
         }
     ],
+    "relationships": [],
     "changelogDate": "20180601174816",
     "entityTableName": "person",
     "dto": "no",
     "pagination": "no",
     "service": "serviceImpl",
     "jpaMetamodelFiltering": true,
-    "angularJSSuffix": "schoolcore"
+    "fluentMethods": true,
+    "clientRootFolder": "",
+    "applications": "*"
 }

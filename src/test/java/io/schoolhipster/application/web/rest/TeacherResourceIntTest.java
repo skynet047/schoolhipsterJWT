@@ -76,7 +76,7 @@ public class TeacherResourceIntTest {
 
     @Autowired
     private TeacherMapper teacherMapper;
-
+    
     @Mock
     private TeacherService teacherServiceMock;
 
@@ -240,7 +240,7 @@ public class TeacherResourceIntTest {
             .andExpect(jsonPath("$.[*].hourlyRate").value(hasItem(DEFAULT_HOURLY_RATE)))
             .andExpect(jsonPath("$.[*].rate").value(hasItem(DEFAULT_RATE)));
     }
-
+    
     public void getAllTeachersWithEagerRelationshipsIsEnabled() throws Exception {
         TeacherResource teacherResource = new TeacherResource(teacherServiceMock, teacherQueryService);
         when(teacherServiceMock.findAllWithEagerRelationships(any())).thenReturn(new PageImpl(new ArrayList<>()));
